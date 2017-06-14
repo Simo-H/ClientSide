@@ -13,8 +13,8 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
   $routeProvider
       .when('/',
           {
-              templateUrl: 'Templates/Main/Home.html'
-              // controller: 'homeController'
+              templateUrl: 'Templates/Main/Home.html',
+              controller: 'homeController'
 
           })
       .when('/simo',
@@ -22,11 +22,16 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
               templateUrl: 'view2/view2.html'
           })
       .otherwise({redirectTo: 'index.html'});
-}
-    .controller('homeController',function ($scope,$http) {
-        $http.get("http://localhost:8888/movies/bestfive").then(function (response) {
-            $scope.movies = JSON.parse(response.data);
-            console.log("1")
+}])
+    .controller('homeController',function ($scope,$http,$log) {
+        $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
+            $log.info(response);
+            $scope.movies = [];
+            $scope.movies = response;
+
         })
     })
-]);
+    // myApp.controller('homeController',function ($scope) {
+    //
+    // })
+

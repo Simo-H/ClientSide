@@ -5,11 +5,12 @@
     <title>Home</title>
 </head>
 <body>
-<div>
+<div style="margin-left: 50px">
+    </br>
     Name:
     <input type="text" ng-model="filter.name"/>
     <h2>Home</h2>
-    <li type="text" ng-repeat="movie in movies | filter:filter.name">
+    <li type="text" ng-repeat="movie in movies">
         {{movie.name}}
 
     </li>
