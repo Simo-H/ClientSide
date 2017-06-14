@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-angular.module('myApp', [
+var app =angular.module('myApp', [
   'ngRoute',
   'myApp.View.Home',
   'myApp.view2',
@@ -19,5 +19,27 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
           {
               templateUrl: 'view2/view2.html'
           })
+      .when('/login',
+          {
+              resolve:{
+                  "check":function () {
+
+
+                  }
+              },
+              templateUrl: 'Main/login.html',
+              controller: 'loginControl'
+          })
       .otherwise({redirectTo: 'index.html'});
 }]);
+
+
+app.controller('loginControl',function($scope, $http){
+     $scope.submit=function(){
+        var uname= $scope.username;
+        var password= $scope.password;
+         $scope.myFunction = function() {
+            
+         }
+     }
+ });
