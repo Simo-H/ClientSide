@@ -11,9 +11,11 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
   $locationProvider.hashPrefix('!');
 
   $routeProvider
-      .when('/stav',
+      .when('/',
           {
-            templateUrl: 'View.Home/View.Home.html'
+              templateUrl: 'Templates/Main/Home.html',
+              controller: 'homeController'
+
           })
       .when('/simo',
           {
@@ -31,7 +33,19 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
               controller: 'loginControl'
           })
       .otherwise({redirectTo: 'index.html'});
-}]);
+}])
+    .controller('homeController',function ($scope,$http,$log) {
+        $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
+            $log.info(response);
+            $scope.movies = [];
+            $scope.movies = response;
+
+        })
+    })
+    // myApp.controller('homeController',function ($scope) {
+    //
+    // })
+
 
 
 app.controller('loginControl',function($scope, $http){
@@ -39,7 +53,7 @@ app.controller('loginControl',function($scope, $http){
         var uname= $scope.username;
         var password= $scope.password;
          $scope.myFunction = function() {
-            
+
          }
      }
  });
