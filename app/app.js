@@ -13,7 +13,7 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
   $routeProvider
       .when('/',
           {
-              templateUrl: 'Templates/Main/Home.html',
+              templateUrl: 'View.Home/View.Home.html',
               controller: 'homeController'
 
           })
