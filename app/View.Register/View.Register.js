@@ -1,3 +1,4 @@
+
 function checkPass()
 {
     //Store the password field objects into variables ...
@@ -24,7 +25,9 @@ function checkPass()
             //notify the user.
             pass2.style.backgroundColor = badColor;
             message.style.color = badColor;
-            message.innerHTML = "Passwords Do Not Match!"
+            // message.innerHTML = "Passwords Do Not Match!"
+            document.getElementById("confirmMessage").innerHTML    = "<span class='warning'>Passwords Do Not Match!</span>";
+
         }
 
 }
@@ -48,10 +51,22 @@ function Validate(txt) {
 // validates text only
 function Validate2(txt) {
     txt.value = txt.value.replace(/[^a-zA-Z-'\n\r.]+/g, '');
+
+}
+
+
+function username_validate(txt)
+{
+
     if(txt.length < 3)
     {
-        document.getElementById("status4").innerHTML    = "<span class='warning'>user name is not valid yet.</span>";
+        document.getElementById("usernameStatus").innerHTML    = "<span class='warning'>user name is not valid yet.</span>";
     }
+    else
+    {
+        document.getElementById("usernameStatus").innerHTML    =null;
+    }
+
 }
 
 
@@ -73,18 +88,24 @@ function email_validate(email)
 // validate password
 function pass_validate(pas)
 {
-    var contain = /^([a-zA-Z])$/;
-    var contain2= /^([0-9])$/;
+    var input=pas;
+    var reo = /[0-9]/;
+    var re = /[a-zA-Z]/;
+    var letters=re.test(input);
+    var numbers=reo.test(input);
+    if (letters& numbers& pas.length>5)
+    {
+        document.getElementById("passwordStatus").innerHTML=null;
+    }
+else
+    {
+        document.getElementById("passwordStatus").innerHTML = "<span class='warning'>Password is not valid yet.</span>";
 
-    if(contain.test(pas) == false ||contain2.test(pas)==false )
-    {
-        document.getElementById("status1").innerHTML    = "<span class='warning'>Password is not valid yet.</span>";
     }
-    else
-    {
-        document.getElementById("status2").innerHTML	= "<span class='valid'>Thanks, you have entered a valid Password</span>";
-    }
+
 }
+
+
 
 
 // validate date of birth
