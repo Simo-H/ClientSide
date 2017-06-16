@@ -17,6 +17,12 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
               controller: 'homeController'
 
           })
+      .when('/Register',
+          {
+              templateUrl: 'View.Register/View.Register.html',
+              controller: ''
+
+          })
       .when('/simo',
           {
               templateUrl: 'view2/view2.html'
