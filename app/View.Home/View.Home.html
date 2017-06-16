@@ -12,10 +12,10 @@
     <title>Heroic Features - Start Bootstrap Template</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="View.Home/css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="View.Home/css/heroic-features.css" rel="stylesheet">
+    <link href="css/heroic-features.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,54 +28,6 @@
 
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <span class="navbar-brand" > welcome name </span>
-
-                <!--<a class="navbar-brand" href="#">Home</a>-->
-
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-                <ul class="nav navbar-nav">
-                    <li>
-                        <span style="color: transparent" class="navbar-brand" href="#">SPACE</span>
-                    </li>
-                    <li>
-                        <a class="navbar-brand" href="#">Home</a>
-                    </li>
-                    <li>
-                        <a href="#">Movies</a>
-                    </li>
-                    <li role="separator" class="divider"></li>
-                    <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#Login">Login</a></li>
-                    <li><a href="#Register">Register</a></li>
-                    <li class="glyphicon glyphicon-shopping-cart" glyph-orientation-vertical: middle></li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
 
     <!-- Page Content -->
     <div class="container">
@@ -101,11 +53,11 @@
         <!-- Page Features -->
         <div class="row text-center">
 
-            <div class="col-md-3 col-sm-6 hero-feature">
+            <div ng-repeat="movie in moviesHot" class="col-md-3 col-sm-6 hero-feature">
                 <div class="thumbnail">
                     <img src="http://placehold.it/800x500" alt="">
                     <div class="caption">
-                        <h3>Feature Label</h3>
+                        <h3>{{movie.name}}</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                         <p>
                             <a href="#" class="btn btn-primary">Buy Now!</a> <a href="#" class="btn btn-default">More Info</a>
@@ -128,12 +80,13 @@
         <!-- Page Features -->
         <div class="row text-center">
 
-            <div class="col-md-3 col-sm-6 hero-feature">
+            <div ng-repeat="movie in moviesNew" class="col-md-3 col-sm-6 hero-feature">
                 <div class="thumbnail">
                     <img src="http://placehold.it/800x500" alt="">
                     <div class="caption">
-                        <h3>Feature Label</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                        <h3>{{movie.name}}</h3>
+                        <p>{{movie.category}} </p>
+                        <p>{{movie.price_dollars}} </p>
                         <p>
                             <a href="#" class="btn btn-primary">Buy Now!</a> <a href="#" class="btn btn-default">More Info</a>
                         </p>
