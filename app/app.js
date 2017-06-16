@@ -20,7 +20,7 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
       .when('/Register',
           {
               templateUrl: 'View.Register/View.Register.html',
-              controller: ''
+              controller: 'RegisterController'
 
           })
       .when('/simo',
@@ -87,3 +87,14 @@ app.controller('loginControl',function($scope, $http){
          }
      }
  });
+
+app.controller('RegisterController',function($scope, $http,$log){
+    $scope.submit=function(){
+        var uname= $scope.username;
+        $log.info(uname);
+        var password= $scope.password;
+        $scope.myFunction = function() {
+
+        }
+    }
+});
