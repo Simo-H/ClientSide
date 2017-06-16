@@ -15,7 +15,7 @@
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-lg-6">
                                 <div class="form-group">
-                                    <input type="text" ng-model="uaer.first_name" required required ng-pattern ="/^[a-zA-Z\s]*$/" name="first_name" id="first_name" class="form-control input-lg" placeholder="First Name*"  >
+                                    <input type="text" ng-model="first_name" required required ng-pattern ="/^[a-zA-Z\s]*$/" name="first_name" id="first_name" class="form-control input-lg" placeholder="First Name*"  >
                                     <span ng-show="frm.first_name.$dirty&&frm.first_name.$error.required">required</span>
                                     <span ng-show="frm.first_name.$dirty&&frm.first_name.$error.pattern">only letters</span>
                                 </div>
@@ -122,10 +122,8 @@
                                 </div>
                             </div>
                         </div>
-
-                        <button  ng-click="submit()" ng-disabled="frm.$invalid"  class="btn btn-info btn-block" > Register</button>
-
                     </form>
+                    <button  ng-click="submit()" ng-disabled="frm.$invalid"  class="btn btn-info btn-block" > Register</button>
                 </div>
             </div>
         </div>

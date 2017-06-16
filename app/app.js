@@ -23,9 +23,11 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
               controller: 'RegisterController'
 
           })
-      .when('/simo',
+      .when('/Movies',
           {
-              templateUrl: 'view2/view2.html'
+              templateUrl: 'View.Movies/View.Movies.html',
+              controller: 'moviesController'
+
           })
       .when('/login',
           {
@@ -70,31 +72,60 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
                         $log.info(response);
                         $scope.moviesNew = response;
                     });
-    });
-
-    // myApp.controller('homeController',function ($scope) {
-    //
-    // })
-
-
-
-app.controller('loginControl',function($scope, $http){
-     $scope.submit=function(){
-        var uname= $scope.username;
-        var password= $scope.password;
-         $scope.myFunction = function() {
+    })
+    .controller('moviesController',function ($scope,$http,$log) {
+        $scope.categories = new Array('action', 'animation', 'sci-fi', 'comics');
+        $scope.movisByCategory = {};
+        angular.forEach($scope.categories, function (catagory) {
+            // Here, the lang object will represent the lang you called the request on for the scope of the function
+            $http.get("http://localhost:8888/movies/getNextMovies?limit=5&category=" + catagory + "&rownum=1").success(function (response) {
+                $scope.movisByCategory[catagory] = [];
+                $scope.movisByCategory[catagory] = response;
+                $log.info($scope.movisByCategory[catagory]);
+            });
+        });
+        $scope.getSixMoreMoviesByCategory = function (category) {
+            $log.info(category);
+            var from = $scope.movisByCategory[category].length + 1;
+            $http.get("http://localhost:8888/movies/getNextMovies?limit=6&category=" + category + "&rownum=" + from).success(function (response) {
+                $scope.movisByCategory[category].push.apply($scope.movisByCategory[category], response);
+            });
+        }
+        $scope.viewMovie = function (selectedMovie) {
+            var modalInstance = $modal.open({
+                templateUrl: 'Templates/Main/MovieDetailsModal.html',
+                controller: 'MovieModalController',
+                resolve: {
+                    movie: function () {
+                        return selectedMovie;
+                    }
+                }
+            });
+        }
+    })
+    .controller('loginControl',function($scope, $http){
+        $scope.submit=function(){
+            var uname= $scope.username;
+            var password= $scope.password;
+            $scope.myFunction = function() {
 
          }
      }
- });
+    })
 
-app.controller('RegisterController',function($scope, $http,$log){
-    $scope.submit=function(){
-        var uname= $scope.username;
-        $log.info(uname);
+    .controller('RegisterController',function($scope, $http,$log){
+    $scope.submit = function(){
+        var username= $scope.first_name;
+        $log.info(username);
         var password= $scope.password;
+
         $scope.myFunction = function() {
 
         }
     }
-});
+    })
+    .controller('MovieModalController', function ($scope, $modalInstance, movie) {
+        $scope.title = movie.title;
+        $scope.id = movie.id
+    });
+
