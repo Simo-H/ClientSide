@@ -15,39 +15,28 @@ var app = angular.module('myApp', [
             {
                 templateUrl: 'View.Home/View.Home.html',
                 controller: 'homeController'
-
+            })
+        .when('/Login',
+            {
+                templateUrl: 'View.Login/View.Login.html',
+                controller: 'LoginController'
             })
         .when('/Register',
             {
                 templateUrl: 'View.Register/View.Register.html',
                 controller: 'RegisterController'
-
             })
         .when('/Movies',
             {
                 templateUrl: 'View.Movies/View.Movies.html',
                 controller: 'moviesController'
-
             })
-        .when('/login',
+        .when('/ShoppingCart',
             {
-                resolve: {
-                    "check": function () {
-
-          })
-      .when('/ShoppingCart',
-      {
-          templateUrl: 'View.ShoppingCart/View.ShoppingCart.html',
-          controller: ''
-
-                    }
-                },
-                templateUrl: 'Main/login.html',
-                controller: 'loginControl'
+                templateUrl: 'View.ShoppingCart/View.ShoppingCart.html',
+                controller: ''
             })
         .otherwise({redirectTo: 'index.html'});
-      })
-      .otherwise({redirectTo: 'index.html'});
 }])
     .factory('UserDetails', function () {
         var factory = {};
@@ -62,7 +51,7 @@ var app = angular.module('myApp', [
         factory.getUserName = function () {
             return userName;
         }
-        factory.setUserStatus = function (name) {
+        factory.setUserName = function (name) {
             userName = name;
         }
         return factory;
@@ -114,68 +103,70 @@ var app = angular.module('myApp', [
         };
 
     })
-    .controller('LoginController',function($scope, $http){
-        $scope.Login=function(){
+    .controller('LoginController', function ($scope, $http, $log,UserDetails) {
+        $scope.Login = function () {
+            $log.info("test");
             var login = {
-                client_id: $scope.client_id,
+                username: $scope.username,
                 password: $scope.password,
             }
-            $scope.myFunction = function() {
-                var res = $http.post('http://localhost:8888/clients/login', login,{headers:{'Content-Type': 'application/json'}});
-                res.success(function(data, status, headers, config) {
-                    $scope.message = data;
-                    UserDetails.getUserName=data.first_name;
-                });
-                res.error(function(data, status, headers, config) {
-                    alert( "failure message: " + JSON.stringify({data: data}));
-                });
-                // Making the fields empty
-                //
-                $scope.client_id='';
-                $scope.password='';
-         }
-     }
+
+
+            var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
+            res.success(function (data, status, headers, config) {
+                UserDetails.setUserName(data.first_name);
+                $log.info(data);
+            });
+            res.error(function (data, status, headers, config) {
+                alert("failure message: " + JSON.stringify({data: data}));
+            });
+            // Making the fields empty
+            //
+            $scope.client_id = '';
+            $scope.password = '';
+
+        }
     })
 
-app.controller('RegisterController',function($scope, $http,$log){
-    $scope.submit=function(){
+app.controller('RegisterController', function ($scope, $http, $log) {
+    $scope.submit = function () {
         var user = {
-            client_id:$scope.client_id,
-            first_name : $scope.first_name,
-            last_name : $scope.last_name,
-            address:$scope.address,
-            phone_number:$scope.phone_number,
-            email_address:$scope.email_address,
-            credit_card:$scope.credit_card,
-            security_answer:$scope.security_answer,
-            password:$scope.password,
+            client_id: $scope.client_id,
+            first_name: $scope.first_name,
+            last_name: $scope.last_name,
+            address: $scope.address,
+            phone_number: $scope.phone_number,
+            email_address: $scope.email_address,
+            credit_card: $scope.credit_card,
+            security_answer: $scope.security_answer,
+            password: $scope.password,
             country: $scope.country,
-            favourite_catergory:$scope.favourite_catergory,
-            favourite_catergory2:$scope.favourite_catergory2,
+            favourite_catergory: $scope.favourite_catergory,
+            favourite_catergory2: $scope.favourite_catergory2,
             username: $scope.username
         };
         $log.info(first_name);
         // var password= $scope.last_name;
-        var res = $http.post('http://localhost:8888/clients/addClient', user,{headers:{'Content-Type': 'application/json'}});
-        res.success(function(data, status, headers, config) {
+        var res = $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}});
+        res.success(function (data, status, headers, config) {
             $scope.message = data;
             $log.info(first_name);
 
         });
-        res.error(function(data, status, headers, config) {
-            alert( "failure message: " + JSON.stringify({data: data}));
+        res.error(function (data, status, headers, config) {
+            alert("failure message: " + JSON.stringify({data: data}));
         });
         // Making the fields empty
         //
-        $scope.name='';
-        $scope.employees='';
-        $scope.headoffice='';
+        $scope.name = '';
+        $scope.employees = '';
+        $scope.headoffice = '';
     }
-    })
-    .controller('MovieModalController',function ($scope, $uibModalInstance, movie,$log,$http) {
+})
+    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http) {
 
         $scope.movie = movie;
-        $http.get("http://localhost:8888/movies/movieDescription?movie_id="+movie.movie_id).success(function (response) {
+        $http.get("http://localhost:8888/movies/movieDescription?movie_id=" + movie.movie_id).success(function (response) {
             $scope.movieDescription = response[0];
             $log.info($scope.movieDescription);
         });

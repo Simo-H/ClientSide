@@ -30,7 +30,7 @@
 
                             <div class="form-group">
 
-                                <input ng-model="password" required required ng-pattern ="/^[a-z0-9A-Z\s]*$/" ng-minlength="5" ng-maxlength="10" type="text" name="password" id="passwordlogin" class="form-control input-lg" placeholder="Password*" minlength="3" maxlength="8" >
+                                <input ng-model="password" required required ng-pattern ="/^[a-z0-9A-Z\s]*$/" ng-minlength="5" ng-maxlength="10" type="text" name="password" id="passwordlogin" class="form-control input-lg" placeholder="Password*" >
                                 <div >
                                     <span ng-show="frm.password.$dirty&&frm.password.$error.required">required</span>
                                     <span ng-show="frm.password.$dirty&&frm.password.$error.pattern">only letters</span>
