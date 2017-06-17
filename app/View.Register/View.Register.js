@@ -1,4 +1,4 @@
-
+var checkPassIsValid;
 function checkPass()
 {
     //Store the password field objects into variables ...
@@ -18,7 +18,9 @@ function checkPass()
             //the user that they have entered the correct password
             pass2.style.backgroundColor = goodColor;
             message.style.color = goodColor;
-            message.innerHTML = "Passwords Match"
+            message.innerHTML = "Passwords Match";
+            checkPassIsValid = true;
+            console.log(checkPassIsValid);
         } else {
             //The passwords do not match.
             //Set the color to the bad color and
@@ -27,7 +29,8 @@ function checkPass()
             message.style.color = badColor;
             // message.innerHTML = "Passwords Do Not Match!"
             document.getElementById("confirmMessage").innerHTML    = "<span class='warning'>Passwords Do Not Match!</span>";
-
+            checkPassIsValid = false;
+            console.log(checkPassIsValid);
         }
 
 }
@@ -61,10 +64,12 @@ function username_validate(txt)
     if(txt.length < 3)
     {
         document.getElementById("usernameStatus").innerHTML    = "<span class='warning'>user name is not valid yet.</span>";
+        return false;
     }
     else
     {
         document.getElementById("usernameStatus").innerHTML    =null;
+        return true;
     }
 
 }
@@ -78,10 +83,12 @@ function email_validate(email)
     if(regMail.test(email) == false)
     {
         document.getElementById("status").innerHTML    = "<span class='warning'>Email address is not valid yet.</span>";
+        return false;
     }
     else
     {
         document.getElementById("status").innerHTML	= "<span class='valid'>Thanks, you have entered a valid Email address!</span>";
+        return true;
     }
 }
 
