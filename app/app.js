@@ -38,35 +38,39 @@ var app = angular.module('myApp', [
             })
         .otherwise({redirectTo: 'index.html'});
 }])
-    .factory('UserDetails', function () {
+    .factory('UserDetails', function ($rootScope, $log) {
         var factory = {};
-        var isLoggedIn = true;
-        var userName = "Guest";
+        factory.isLoggedIn = false;
+        factory.userName = "Guest";
         factory.getUserStatus = function () {
-            return isLoggedIn;
+            return factory.isLoggedIn;
         }
         factory.setUserStatus = function (status) {
-            isLoggedIn = status;
+            factory.isLoggedIn = status;
+            $log.info(factory.isLoggedIn);
         }
         factory.getUserName = function () {
-            return userName;
+            return factory.userName;
         }
         factory.setUserName = function (name) {
-            userName = name;
+            factory.userName = name;
+            $rootScope.$broadcast('updateUser');
+
         }
         return factory;
     })
     .controller('homeController', function ($scope, $http, $log, UserDetails) {
         $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
-            $log.info(response);
+            // $log.info(response);
+            $scope.LoggedIn = UserDetails.getUserStatus();
             $scope.moviesHot = [];
             $scope.moviesHot = response;
             $scope.moviesNew = [];
         });
-        if (UserDetails.getUserStatus())
-            $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
-                $scope.moviesNew = response;
-            });
+        $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
+            $log.info(response);
+            $scope.moviesNew = response;
+        });
     })
     .controller('moviesController', function ($scope, $http, $log, $uibModal) {
         $scope.categories = new Array('action', 'animation', 'sci-fi', 'comics');
@@ -103,19 +107,21 @@ var app = angular.module('myApp', [
         };
 
     })
-    .controller('LoginController', function ($scope, $http, $log,UserDetails) {
+    .controller('LoginController', function ($scope, $http, $log, UserDetails) {
         $scope.Login = function () {
-            $log.info("test");
             var login = {
                 username: $scope.username,
                 password: $scope.password,
             }
-
-
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-                UserDetails.setUserName(data.first_name);
-                $log.info(data);
+                // $log.info(data[0].username);
+                UserDetails.setUserStatus(true);
+                UserDetails.setUserName(data[0].username);
+                // UserDetails.setUserStatus(true);
+                // $log.info(UserDetails.getUserStatus())
+                // NavController.updateUserName();
+                // $log.info(UserDetails.getUserName());
             });
             res.error(function (data, status, headers, config) {
                 alert("failure message: " + JSON.stringify({data: data}));
@@ -127,42 +133,41 @@ var app = angular.module('myApp', [
 
         }
     })
-
-app.controller('RegisterController', function ($scope, $http, $log) {
-    $scope.submit = function () {
-        var user = {
-            client_id: $scope.client_id,
-            first_name: $scope.first_name,
-            last_name: $scope.last_name,
-            address: $scope.address,
-            phone_number: $scope.phone_number,
-            email_address: $scope.email_address,
-            credit_card: $scope.credit_card,
-            security_answer: $scope.security_answer,
-            password: $scope.password,
-            country: $scope.country,
-            favourite_catergory: $scope.favourite_catergory,
-            favourite_catergory2: $scope.favourite_catergory2,
-            username: $scope.username
-        };
-        $log.info(first_name);
-        // var password= $scope.last_name;
-        var res = $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}});
-        res.success(function (data, status, headers, config) {
-            $scope.message = data;
+    .controller('RegisterController', function ($scope, $http, $log) {
+        $scope.submit = function () {
+            var user = {
+                client_id: $scope.client_id,
+                first_name: $scope.first_name,
+                last_name: $scope.last_name,
+                address: $scope.address,
+                phone_number: $scope.phone_number,
+                email_address: $scope.email_address,
+                credit_card: $scope.credit_card,
+                security_answer: $scope.security_answer,
+                password: $scope.password,
+                country: $scope.country,
+                favourite_catergory: $scope.favourite_catergory,
+                favourite_catergory2: $scope.favourite_catergory2,
+                username: $scope.username
+            };
             $log.info(first_name);
+            // var password= $scope.last_name;
+            var res = $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}});
+            res.success(function (data, status, headers, config) {
+                $scope.message = data;
+                $log.info(first_name);
 
-        });
-        res.error(function (data, status, headers, config) {
-            alert("failure message: " + JSON.stringify({data: data}));
-        });
-        // Making the fields empty
-        //
-        $scope.name = '';
-        $scope.employees = '';
-        $scope.headoffice = '';
-    }
-})
+            });
+            res.error(function (data, status, headers, config) {
+                alert("failure message: " + JSON.stringify({data: data}));
+            });
+            // Making the fields empty
+            //
+            $scope.name = '';
+            $scope.employees = '';
+            $scope.headoffice = '';
+        }
+    })
     .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http) {
 
         $scope.movie = movie;
@@ -177,5 +182,19 @@ app.controller('RegisterController', function ($scope, $http, $log) {
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+    })
+    .controller('NavController', function ($scope, UserDetails, $location) {
+        $scope.userName = UserDetails.getUserName();
+        $scope.$on('updateUser', function () {
+            $scope.userName = UserDetails.getUserName();
+            // $scope.isLoggedIn = UserDetails.getUserStatus();
+            $location.path('/');
+
+        });
+
+        // $scope.setUserName($scope.UserName);
+        // $log.info($scope.UserName);
+
+
     });
 

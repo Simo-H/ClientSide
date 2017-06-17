@@ -70,32 +70,33 @@
 
 
         <!-- Title -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h3>New Movies</h3>
+        <div ng-show="LoggedIn == true">
+            <div  class="row">
+                <div class="col-lg-12">
+                    <h3>New Movies</h3>
+                </div>
             </div>
-        </div>
-        <!-- /.row -->
+            <!-- /.row -->
 
-        <!-- Page Features -->
-        <div class="row text-center">
+            <!-- Page Features -->
+            <div  class="row text-center">
 
-            <div ng-repeat="movie in moviesNew" class="col-md-3 col-sm-6 hero-feature">
-                <div class="thumbnail">
-                    <img src="http://placehold.it/800x500" alt="">
-                    <div class="caption">
-                        <h3>{{movie.name}}</h3>
-                        <p>{{movie.category}} </p>
-                        <p>{{movie.price_dollars}} </p>
-                        <p>
-                            <a href="#" class="btn btn-primary">Buy Now!</a> <a href="#" class="btn btn-default">More Info</a>
-                        </p>
+                <div ng-repeat="movie in moviesNew" class="col-md-3 col-sm-6 hero-feature">
+                    <div class="thumbnail">
+                        <img src="http://placehold.it/800x500" alt="">
+                        <div class="caption">
+                            <h3>{{movie.name}}</h3>
+                            <p>{{movie.category}} </p>
+                            <p>{{movie.price_dollars}} </p>
+                            <p>
+                                <a href="#" class="btn btn-primary">Buy Now!</a> <a href="#" class="btn btn-default">More Info</a>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
+            <hr>
         </div>
-        <hr>
-
         <!-- Footer -->
         <footer>
             <div class="row">
