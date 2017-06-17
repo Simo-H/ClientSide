@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <div class="container-fluide">
+        <style>
+            input.ng-invalid.ng-dirty{border:1px solid red}
+        </style>
+        <div class="row centered-form container-fluide">
+            <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Login</h3>
+                    </div>
+
+                    <div class="login-body">
+                        <form role="form" name="frm" >
+
+                            <div class="form-group">
+
+                                <input ng-model="username" required required ng-pattern ="/^[a-zA-Z\s]*$/" ng-minlength="3" ng-maxlength="8" type="text" name="username" id="loginusername" class="form-control input-lg" placeholder="User name*" minlength="3" maxlength="8" >
+                                <div >
+                                    <span ng-show="frm.username.$dirty&&frm.username.$error.required">required</span>
+                                    <span ng-show="frm.username.$dirty&&frm.username.$error.pattern">only letters</span>
+                                    <span ng-show="frm.username.$dirty&&frm.username.$error.minlength">too short</span>
+                                    <span ng-show="frm.username.$dirty&&frm.username.$error.maxlength">too ling</span>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <input ng-model="password" required required ng-pattern ="/^[a-z0-9A-Z\s]*$/" ng-minlength="5" ng-maxlength="10" type="text" name="password" id="passwordlogin" class="form-control input-lg" placeholder="Password*" minlength="3" maxlength="8" >
+                                <div >
+                                    <span ng-show="frm.password.$dirty&&frm.password.$error.required">required</span>
+                                    <span ng-show="frm.password.$dirty&&frm.password.$error.pattern">only letters</span>
+                                    <span ng-show="frm.password.$dirty&&frm.password.$error.minlength">too short</span>
+                                    <span ng-show="frm.password.$dirty&&frm.password.$error.maxlength">too ling</span>
+                                </div>
+
+                            </div>
+
+
+                        </form>
+                        <button  ng-click="Login()" ng-disabled="frm.$invalid"  class="btn btn-info btn-block" > Login</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</head>
+<body>
+
+</body>
+</html>

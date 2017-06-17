@@ -6,9 +6,8 @@
         <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Please sign up for Bootsnipp <small>It's free!</small></h3>
+                    <h3 class="panel-title" >Register</h3>
                 </div>
-
                 <div class="panel-body">
                     <form role="form" name="frm" >
 
@@ -44,87 +43,107 @@
                         </div>
 
                         <div class="form-group">
-                            <input  ng-model="email" required type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address*" >
+                            <input  ng-model="email_address" required type="email" name="email_address" id="email" class="form-control input-lg" placeholder="Email Address*" >
                             <!--<div class="status" id="status"></div>-->
                             <div>
-                            <span ng-show="frm.email.$dirty&&frm.email.$error.required">required</span>
-                            <span ng-show="frm.email.$dirty&&frm.email.$error.email">not a email!</span>
+                            <span ng-show="frm.email_address.$dirty&&frm.email_address.$error.required">required</span>
+                            <span ng-show="frm.email_address.$dirty&&frm.email_address.$error.email">not a email!</span>
                             </div>
 
                         </div>
+                        <p >favorite color:</p>
                         <div class="form-group">
-                            <input type="text" ng-model="add" required required  ng-minlength="3" name="add" id="add" class="form-control input-lg" placeholder="Adress*">
-                            <span ng-show="frm.add.$dirty&&frm.add.$error.required">required</span>
-                            <span ng-show="frm.add.$dirty&&frm.add.$error.minlength">too short</span>
+                            <!--<input required name="password" type="password" class="form-control input-lg" class="form-control inputpass" placeholder="Password*" minlength="10"  id="pass1" onchange="email_validate(this.value);"> </p>-->
+                            <input ng-model="security_answer" required  ng-maxlength="1"  name="security_answer" type="text" class="form-control inputpass form-control input-lg" placeholder="security answer*" /> </p>
+                            <span ng-show="frm.security_answer.$dirty&&frm.security_answer.$error.required">required</span>
+                            <span ng-show="frm.security_answer.$dirty&&frm.security_answer.$error.minlength">too short</span>
 
                         </div>
 
 
-                        <div  class="form-group">
-                            <select ng-model="country" required  class="form-control input-lg" name="country"    class="custom-select mb-2 mr-sm-2 mb-sm-0" id="country" >
-                                <option selected class="form-control input-lg">Choose...</option>
-                                <option value="1" class="form-control input-lg">One</option>
-                                <option value="2" class="form-control input-lg">Two</option>
-                                <option value="3" class="form-control input-lg">Three</option>
-                            </select>
-                            <div>
-                                <span ng-show="frm.country.$error.required">required</span>
 
-                            </div>
-
-                        </div>
-                        <!--<div class="form-group">-->
-                            <!--<input type="text" name="country" id="country" class="form-control input-lg" placeholder="Country*">-->
-                        <!--</div>-->
-
-
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <!--<input required name="password" type="password" class="form-control input-lg" class="form-control inputpass" placeholder="Password*" minlength="5" maxlength="10"  id="pass1" onchange="email_validate(this.value);"> </p>-->
-                                    <input ng-model="password" required  pattern="(?=.*\d)(?=.*[a-zA-Z^]).{5,}" ng-maxlength="10" ng-minlength="5" name="password" type="password" class="form-control inputpass form-control input-lg" placeholder="Password*" /> </p>
+                                    <input ng-model="password" required  pattern="(?=.*\d)(?=.*[a-zA-Z^]).{10,}" ng-maxlength="10" ng-minlength="5" name="password" type="password" class="form-control inputpass form-control input-lg" placeholder="Password*" /> </p>
                                     <span ng-show="frm.password.$dirty&&frm.password.$error.required">required</span>
                                     <span ng-show="frm.password.$dirty&&frm.password.$error.pattern">must contain numbers and letters</span>
                                     <span ng-show="frm.password.$dirty&&frm.password.$error.minlength">too short</span>
                                     <span ng-show="frm.password.$dirty&&frm.password.$error.maxlength">too long</span>
 
                                 </div>
-                            </div>
-                            <!--<div class="col-xs-6 col-sm-6 col-md-6">-->
-                                <!--<div class="form-group">-->
 
-                                    <!--<input ng-model="passwordConfirm.add" required  pattern="(?=.*\d)(?=.*[a-zA-Z^]).{5,}" required required ng-maxlength="10" ng-minlength="5" name="passwordConfirm" type="password" class="form-control inputpass form-control input-lg" placeholder="Enter again to validate"  id="pass2"  />-->
-                                    <!--<span ng-show="frm.passwordConfirm.$error.required">Requerd</span>-->
-                                    <!--<span ng-show="frm.passwordConfirm.$error.pattern">only letters</span>-->
-                                    <!--<span ng-show="frm.passwordConfirm.$error.minlength">too short</span>-->
-                                    <!--<span ng-show="frm.passwordConfirm.$error.maxlength">too ling</span>-->
-                                    <!--&lt;!&ndash;<input required name="password" type="password"  class="form-control input-lg" placeholder="Confirm Password*" class="form-control inputpass" minlength="5" maxlength="10" placeholder="Enter again to validate"  id="pass2" class="form-control inputpass"onchange="email_validate(this.value);">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<input required name="password" type="password" class="form-control inputpass form-control input-lg"  placeholder="Confirm Password*" minlength="5" maxlength="10" placeholder="Enter again to validate"  id="pass2" onkeyup="checkPass(); return false;" />&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<div class="status" id="confirmPasswordStatus"></div>&ndash;&gt;-->
 
-                                <!--</div>-->
-                            <!--</div>-->
+                             <div class="form-group">
+                                        <!--<input required name="password" type="password" class="form-control input-lg" class="form-control inputpass" placeholder="Password*" minlength="5" maxlength="10"  id="pass1" onchange="email_validate(this.value);"> </p>-->
+                                        <input ng-model="client_id" required  pattern="(?=.*\d)(?=.*[0-9]).{9,}" ng-maxlength="9" ng-minlength="9" name="client_id" type="text" class="form-control inputpass form-control input-lg" placeholder="user id*" /> </p>
+                                        <span ng-show="frm.client_id.$dirty&&frm.client_id.$error.required">required</span>
+                                        <span ng-show="frm.client_id.$dirty&&frm.client_id.$error.pattern">must contain only numbers</span>
+                                        <span ng-show="frm.client_id.$dirty&&frm.client_id.$error.minlength">too short</span>
+                                        <span ng-show="frm.client_id.$dirty&&frm.client_id.$error.maxlength">too long</span>
+
+                             </div>
+
+                        <div class="form-group">
+                            <!--<input required name="password" type="password" class="form-control input-lg" class="form-control inputpass" placeholder="Password*" minlength="5" maxlength="10"  id="pass1" onchange="email_validate(this.value);"> </p>-->
+                            <input ng-model="phone_number" required  pattern="(?=.*\d)(?=.*[0-9]).{9,}"  ng-minlength="9" name="phone_number" type="text" class="form-control inputpass form-control input-lg" placeholder="user phone*" /> </p>
+                            <span ng-show="frm.phone_number.$dirty&&frm.phone_number.$error.required">required</span>
+                            <span ng-show="frm.phone_number.$dirty&&frm.phone_number.$error.pattern">must contain only numbers</span>
+                            <span ng-show="frm.phone_number.$dirty&&frm.phone_number.$error.minlength">too short</span>
+
                         </div>
+
+
+                                <div class="form-group">
+                                    <input ng-model="credit_card" required  pattern="(?=.*\d)(?=.*[0-9]).{9,}"  ng-minlength="9" name="credit_card" type="text" class="form-control inputpass form-control input-lg" placeholder="credit card*" /> </p>
+                                    <span ng-show="frm.credit_card.$dirty&&frm.credit_card.$error.required">required</span>
+                                    <span ng-show="frm.credit_card.$dirty&&frm.credit_card.$error.minlength">too short</span>
+
+                                </div>
+
+
+                            <div class="form-group">
+                                <input type="text" ng-model="address" required required  ng-minlength="3" name="address" id="add" class="form-control input-lg" placeholder="Adress*">
+                                <span ng-show="frm.address.$dirty&&frm.address.$error.required">required</span>
+                                <span ng-show="frm.address.$dirty&&frm.address.$error.minlength">too short</span>
+
+                            </div>
+
+                            <div  class="form-group">
+                                <select ng-model="country" required  class="form-control input-lg" name="country"    class="custom-select mb-2 mr-sm-2 mb-sm-0" id="country" >
+                                    <option selected class="form-control input-lg">Choose...</option>
+                                    <option value="1" class="form-control input-lg">One</option>
+                                    <option value="2" class="form-control input-lg">Two</option>
+                                    <option value="3" class="form-control input-lg">Three</option>
+                                    <span ng-show="frm.country.$dirty&&frm.country.$error.required">required</span>
+
+                                </select>
+                                <span ng-show="frm.country.$dirty&&frm.country.$error.required">required</span>
+                            </div>
+
+
+
+
+
+
 
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="form-group">
-                                    <input type="text" ng-model="catagory" required required name="catagory" id="password" class="form-control input-lg" placeholder="Favorite category*">
-                                    <span ng-show="frm.catagory.$dirty&&frm.catagory.$error.required">required</span>
+                                    <input type="text" ng-model="favourite_catergory" required required name="favourite_catergory" id="password" class="form-control input-lg" placeholder="Favorite category*">
+                                    <span ng-show="frm.favourite_catergory.$dirty&&frm.favourite_catergory.$error.required">required</span>
 
                                 </div>
                             </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
+                             <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="form-group">
-                                    <input type="text" ng-model="catagory2" required required name="catagory2" id="password_confirmation" class="form-control input-lg" placeholder="Favorite category 2">
-                                    <span ng-show="frm.catagory2.$dirty&&frm.catagory2.$error.required">required</span>
+                                    <input type="text" ng-model="favourite_catergory2" required required name="favourite_catergory2" id="password_confirmation" class="form-control input-lg" placeholder="Favorite category 2*">
+                                    <span ng-show="frm.favourite_catergory2.$dirty&&frm.favourite_catergory2.$error.required">required</span>
 
                                 </div>
                             </div>
                         </div>
 
-
-                    </form>
+                </form>
                     <button  ng-click="submit()" ng-disabled="frm.$invalid"  class="btn btn-info btn-block" > Register</button>
 
                 </div>

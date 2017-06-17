@@ -1,48 +1,55 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-var app =angular.module('myApp', [
-  'ngRoute',
-  'myApp.View.Home',
-  'myApp.view2',
-  'myApp.version'
-]).
-config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
-  $locationProvider.hashPrefix('!');
+var app = angular.module('myApp', [
+    'ngRoute',
+    'myApp.View.Home',
+    'myApp.view2',
+    'myApp.version',
+    'ui.bootstrap'
+]).config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
+    $locationProvider.hashPrefix('!');
 
-  $routeProvider
-      .when('/',
-          {
-              templateUrl: 'View.Home/View.Home.html',
-              controller: 'homeController'
+    $routeProvider
+        .when('/',
+            {
+                templateUrl: 'View.Home/View.Home.html',
+                controller: 'homeController'
+
+            })
+        .when('/Register',
+            {
+                templateUrl: 'View.Register/View.Register.html',
+                controller: 'RegisterController'
+
+            })
+        .when('/Movies',
+            {
+                templateUrl: 'View.Movies/View.Movies.html',
+                controller: 'moviesController'
+
+            })
+        .when('/login',
+            {
+                resolve: {
+                    "check": function () {
 
           })
-      .when('/Register',
-          {
-              templateUrl: 'View.Register/View.Register.html',
-              controller: 'RegisterController'
+      .when('/ShoppingCart',
+      {
+          templateUrl: 'View.ShoppingCart/View.ShoppingCart.html',
+          controller: ''
 
-          })
-      .when('/Movies',
-          {
-              templateUrl: 'View.Movies/View.Movies.html',
-              controller: 'moviesController'
-
-          })
-      .when('/login',
-          {
-              resolve:{
-                  "check":function () {
-
-
-                  }
-              },
-              templateUrl: 'Main/login.html',
-              controller: 'loginControl'
-          })
+                    }
+                },
+                templateUrl: 'Main/login.html',
+                controller: 'loginControl'
+            })
+        .otherwise({redirectTo: 'index.html'});
+      })
       .otherwise({redirectTo: 'index.html'});
 }])
-    .factory('UserDetails', function(){
+    .factory('UserDetails', function () {
         var factory = {};
         var isLoggedIn = true;
         var userName = "Guest";
@@ -60,20 +67,19 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
         }
         return factory;
     })
-    .controller('homeController',function ($scope,$http,$log,UserDetails) {
+    .controller('homeController', function ($scope, $http, $log, UserDetails) {
         $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
             $log.info(response);
             $scope.moviesHot = [];
             $scope.moviesHot = response;
             $scope.moviesNew = [];
         });
-                if(UserDetails.getUserStatus())
-                    $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
-                        $log.info(response);
-                        $scope.moviesNew = response;
-                    });
+        if (UserDetails.getUserStatus())
+            $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
+                $scope.moviesNew = response;
+            });
     })
-    .controller('moviesController',function ($scope,$http,$log) {
+    .controller('moviesController', function ($scope, $http, $log, $uibModal) {
         $scope.categories = new Array('action', 'animation', 'sci-fi', 'comics');
         $scope.movisByCategory = {};
         angular.forEach($scope.categories, function (catagory) {
@@ -81,34 +87,52 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
             $http.get("http://localhost:8888/movies/getNextMovies?limit=5&category=" + catagory + "&rownum=1").success(function (response) {
                 $scope.movisByCategory[catagory] = [];
                 $scope.movisByCategory[catagory] = response;
-                $log.info($scope.movisByCategory[catagory]);
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
-            $log.info(category);
             var from = $scope.movisByCategory[category].length + 1;
             $http.get("http://localhost:8888/movies/getNextMovies?limit=6&category=" + category + "&rownum=" + from).success(function (response) {
                 $scope.movisByCategory[category].push.apply($scope.movisByCategory[category], response);
             });
         }
-        $scope.viewMovie = function (selectedMovie) {
-            var modalInstance = $modal.open({
+        $scope.viewMovie = function (movie) {
+
+            var modalInstance = $uibModal.open({
                 templateUrl: 'Templates/Main/MovieDetailsModal.html',
                 controller: 'MovieModalController',
                 resolve: {
                     movie: function () {
-                        return selectedMovie;
+                        return movie;
                     }
                 }
             });
-        }
-    })
-    .controller('loginControl',function($scope, $http){
-        $scope.submit=function(){
-            var uname= $scope.username;
-            var password= $scope.password;
-            $scope.myFunction = function() {
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
 
+    })
+    .controller('LoginController',function($scope, $http){
+        $scope.Login=function(){
+            var login = {
+                client_id: $scope.client_id,
+                password: $scope.password,
+            }
+            $scope.myFunction = function() {
+                var res = $http.post('http://localhost:8888/clients/login', login,{headers:{'Content-Type': 'application/json'}});
+                res.success(function(data, status, headers, config) {
+                    $scope.message = data;
+                    UserDetails.getUserName=data.first_name;
+                });
+                res.error(function(data, status, headers, config) {
+                    alert( "failure message: " + JSON.stringify({data: data}));
+                });
+                // Making the fields empty
+                //
+                $scope.client_id='';
+                $scope.password='';
          }
      }
     })
@@ -116,25 +140,27 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
 app.controller('RegisterController',function($scope, $http,$log){
     $scope.submit=function(){
         var user = {
-            client_id:$scope.clientid,
+            client_id:$scope.client_id,
             first_name : $scope.first_name,
             last_name : $scope.last_name,
-            address:$scope.add,
-            phone_number:$scope.phone,
-            email_address:$scope.email,
-            credit_card:$scope.name,
-            security_answer:$scope.name,
+            address:$scope.address,
+            phone_number:$scope.phone_number,
+            email_address:$scope.email_address,
+            credit_card:$scope.credit_card,
+            security_answer:$scope.security_answer,
             password:$scope.password,
             country: $scope.country,
-            favourite_catergory:$scope.catagory,
-            favourite_catergory2:$scope.catagory2,
-            username: $scope.username,
+            favourite_catergory:$scope.favourite_catergory,
+            favourite_catergory2:$scope.favourite_catergory2,
+            username: $scope.username
         };
-        $log.info(uname);
-        var password= $scope.last_name;
-        var res = $http.post('/savecompany_json', dataObj);
+        $log.info(first_name);
+        // var password= $scope.last_name;
+        var res = $http.post('http://localhost:8888/clients/addClient', user,{headers:{'Content-Type': 'application/json'}});
         res.success(function(data, status, headers, config) {
             $scope.message = data;
+            $log.info(first_name);
+
         });
         res.error(function(data, status, headers, config) {
             alert( "failure message: " + JSON.stringify({data: data}));
@@ -146,8 +172,19 @@ app.controller('RegisterController',function($scope, $http,$log){
         $scope.headoffice='';
     }
     })
-    .controller('MovieModalController', function ($scope, $modalInstance, movie) {
-        $scope.title = movie.title;
-        $scope.id = movie.id
+    .controller('MovieModalController',function ($scope, $uibModalInstance, movie,$log,$http) {
+
+        $scope.movie = movie;
+        $http.get("http://localhost:8888/movies/movieDescription?movie_id="+movie.movie_id).success(function (response) {
+            $scope.movieDescription = response[0];
+            $log.info($scope.movieDescription);
+        });
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.selected.item);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     });
 

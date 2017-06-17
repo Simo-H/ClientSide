@@ -28,20 +28,20 @@
 
 <body>
 
-    <!-- Page Content -->
-    <div class="container">
+    <!--&lt;!&ndash; Page Content &ndash;&gt;-->
+    <div >
 
-                <div id="itemModal" class="thumbnail modal fade col-md-9" role="dialog">
+                <div id="movieModal" class="thumbnail col-md-12">
                     <img class="img-responsive" src="http://placehold.it/800x300" alt="">
-                    <div class="caption-full modal-dialog">
-                        <h4 class="pull-right">$24.99</h4>
-                        <h4><a href="#">Product Name</a>
+                    <div class="caption-full">
+                        <h4 class="pull-right">${{movie.price_dollars}}</h4>
+                        <h4>{{movie.name}}
                         </h4>
-                        <p>See more snippets like these online store reviews at <a target="_blank" href="http://bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
-                        <p>Want to make these reviews work? Check out
+                        <p> <a target="_blank" href="http://bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
+                        <p>
                             <strong><a href="http://maxoffsky.com/code-blog/laravel-shop-tutorial-1-building-a-review-system/">this building a review system tutorial</a>
                             </strong>over at maxoffsky.com!</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                        <p>{{movieDescription.description}}</p>
                     </div>
                     <div class="ratings">
                         <p class="pull-right">3 reviews</p>
@@ -56,6 +56,7 @@
                     </div>
                 </div>
     </div>
+
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
