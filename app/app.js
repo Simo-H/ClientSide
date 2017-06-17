@@ -90,11 +90,34 @@ app.controller('loginControl',function($scope, $http){
 
 app.controller('RegisterController',function($scope, $http,$log){
     $scope.submit=function(){
-        var uname= $scope.username;
+        var user = {
+            client_id:$scope.clientid,
+            first_name : $scope.first_name,
+            last_name : $scope.last_name,
+            address:$scope.add,
+            phone_number:$scope.phone,
+            email_address:$scope.email,
+            credit_card:$scope.name,
+            security_answer:$scope.name,
+            password:$scope.password,
+            country: $scope.country,
+            favourite_catergory:$scope.catagory,
+            favourite_catergory2:$scope.catagory2,
+            username: $scope.username,
+        };
         $log.info(uname);
-        var password= $scope.password;
-        $scope.myFunction = function() {
-
-        }
+        var password= $scope.last_name;
+        var res = $http.post('/savecompany_json', dataObj);
+        res.success(function(data, status, headers, config) {
+            $scope.message = data;
+        });
+        res.error(function(data, status, headers, config) {
+            alert( "failure message: " + JSON.stringify({data: data}));
+        });
+        // Making the fields empty
+        //
+        $scope.name='';
+        $scope.employees='';
+        $scope.headoffice='';
     }
 });
