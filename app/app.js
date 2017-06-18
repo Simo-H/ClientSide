@@ -121,7 +121,7 @@ var app = angular.module('myApp', [
             $scope.moviesNew = response;
         });
     })
-    .controller('moviesController', function ($scope, $http, $log, $uibModal,ShoppingDetails) {
+    .controller('moviesController', function ($scope, $http, $log, $uibModal,ShoppingDetails,MoviesUtilities) {
         $scope.categories = new Array('action', 'animation', 'sci-fi', 'comics');
         $scope.searchByCategory = "";
         $scope.searchByMovieName = "";
@@ -140,7 +140,7 @@ var app = angular.module('myApp', [
             $http.get("http://localhost:8888/movies/getNextMovies?limit=6&category=" + category + "&rownum=" + from).success(function (response) {
                 $scope.movisByCategory[category].push.apply($scope.movisByCategory[category], response);
             });
-        }
+        };
         $scope.viewMovie = function (movie) {
 
             var modalInstance = $uibModal.open({
@@ -160,6 +160,13 @@ var app = angular.module('myApp', [
         };
         $scope.getNumber = function(num) {
             return MoviesUtilities.getNumber(num);
+        };
+        $scope.addAmountToMovie = function (movie,amount) {
+            movie['amount'] = amount;
+        }
+        $scope.addMovieToCart = function (movie,amount) {
+            $scope.addAmountToMovie(movie,amount);
+            ShoppingDetails.movies.push.apply(ShoppingDetails.movies, movie);
         }
 
         })
