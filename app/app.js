@@ -56,7 +56,7 @@ var app = angular.module('myApp', [
             }
         };
     })
-    .directive('numberSpin', [function($log){
+    .directive('numberSpin', [function(){
 
         return {
             restrict: 'E',
@@ -80,7 +80,6 @@ var app = angular.module('myApp', [
             link: function(scope, elem, attrs,ctrl){
 
                 scope.onlyNumbers = /^\d+$/;
-
                 scope.plus = function(){
                     if(scope.ngModel<999){
                         scope.ngModel = scope.ngModel*1 + 1;
@@ -97,14 +96,31 @@ var app = angular.module('myApp', [
                 {
                     ctrl.$setViewValue(scope.ngModel);
                 }
-
-
             }
         }
 
     }])
     .filter('filterCategories', function($log) {
         return function(items,text) {
+            var result = {};
+            // $log.info(text);
+            if(text != "")
+            {
+                angular.forEach(items, function(value, key) {
+                    if (key.includes(text)) {
+                        result[key] = value;
+                    }
+                });
+            }
+            else
+            {
+                result = items;
+            }
+            return result;
+        };
+    })
+    .filter('filterMovies', function($log) {
+        return function(items,text,category) {
             var result = {};
             // $log.info(text);
             if(text != "")
@@ -196,13 +212,14 @@ var app = angular.module('myApp', [
         $scope.searchByCategory = "";
         $scope.searchByMovieName = "";
         $scope.movisByCategory = {};
+        $scope.amount = '1';
         angular.forEach($scope.categories, function (catagory) {
             // Here, the lang object will represent the lang you called the request on for the scope of the function
             $http.get("http://localhost:8888/movies/getNextMovies?limit=5&category=" + catagory + "&rownum=1").success(function (response) {
                 $scope.movisByCategory[catagory] = [];
                 $scope.movisByCategory[catagory] = response;
-                ShoppingDetails.movies = response;
-                $log.info(ShoppingDetails.movies);
+                // ShoppingDetails.movies = response;
+                // $log.info(ShoppingDetails.movies);
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
@@ -236,9 +253,13 @@ var app = angular.module('myApp', [
             // $log.info(movie);
         }
         $scope.addMovieToCart = function (movie,amount) {
-            $scope.addAmountToMovie(movie,amount);
-            // $log.info(movie);
-            ShoppingDetails.addMovie(movie);
+            if(amount > 0)
+            {
+                $scope.addAmountToMovie(movie,amount);
+                // $log.info(movie);
+                ShoppingDetails.addMovie(movie);
+            }
+
         }
 
         })
@@ -303,8 +324,8 @@ var app = angular.module('myApp', [
             $scope.headoffice = '';
         }
     })
-    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http,MoviesUtilities) {
-
+    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http,MoviesUtilities,ShoppingDetails) {
+        $scope.amount = '1';
         $scope.movie = movie;
         $http.get("http://localhost:8888/movies/movieDescription?movie_id=" + movie.movie_id).success(function (response) {
             $scope.movieDescription = response[0];
@@ -319,6 +340,18 @@ var app = angular.module('myApp', [
         };
         $scope.getNumber = function(num) {
             return MoviesUtilities.getNumber(num);
+        }
+        $scope.addAmountToMovie = function (movie,amount) {
+            movie['amount'] = amount;
+            // $log.info(movie);
+        }
+        $scope.addMovieToCart = function (movie,amount) {
+            if(amount > 0)
+            {
+                $scope.addAmountToMovie(movie,amount);
+                // $log.info(movie);
+                ShoppingDetails.addMovie(movie);
+            }
         }
     })
     .controller('ShopingCartController', function ($scope,$log,$http,$location,ShoppingDetails){
