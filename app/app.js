@@ -38,10 +38,66 @@ var app = angular.module('myApp', [
             })
         .otherwise({redirectTo: 'index.html'});
 }])
+    .directive('numericOnly', function(){
+        return {
+            require: 'ngModel',
+            link: function(scope, element, attrs, modelCtrl) {
+
+                modelCtrl.$parsers.push(function (inputValue) {
+                    var transformedInput = inputValue ? inputValue.replace(/[^\d]/g,'') : null;
+
+                    if (transformedInput!=inputValue) {
+                        modelCtrl.$setViewValue(transformedInput);
+                        modelCtrl.$render();
+                    }
+
+                    return transformedInput;
+                });
+            }
+        };
+    })
+    .directive('numberSpin', [function(){
+
+        return {
+            restrict: 'E',
+            scope: {
+                "ngModel": '='
+            },
+            template: '<div class="input-group pull-right" style="width: 50px;height: 10px;padding: 0; margin: 0;bottom: 0">'+
+                        '<span class="input-group-btn">'+
+                            '<button data-ng-click="minus()" style="width: 10px;padding: 0;height: 20px " type="button" class="btn btn-danger btn-number" data-type="minus" data-field="quant[2]">'+
+                             '<span style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"; class="glyphicon glyphicon-minus"; ></span>'+
+                            '</button>'+
+                        '</span>'+
+                        '<input numeric-only data-ng-model="ngModel" ng-pattern="onlyNumbers" type="text" name="quant[2]" style="padding: 0;margin: 0;font-size: 15px;text-align: center;height: 20px" class="form-control input-number" value=1 min="1" max="100">'+
+                        '<span class="input-group-btn">'+
+                            '<button data-ng-click="plus()" type="button" class="btn btn-success btn-number"  style="width: 10px;padding-bottom: 10px;padding:0px;top: 0;margin-top:0;height: 20px " data-type="plus" data-field="quant[2]">'+
+                                '<span class="glyphicon glyphicon-plus" style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"></span>'+
+                            '</button>'+
+                        '</span>'+
+                    '</div>',
+            link: function(scope, elem, attrs,$log){
+
+                scope.onlyNumbers = /^\d+$/;
+
+                scope.plus = function(){
+                    if(scope.ngModel<999)
+                        scope.ngModel = scope.ngModel*1 + 1;
+                }
+                scope.minus = function(){
+                    if(scope.ngModel>0)
+                        scope.ngModel = scope.ngModel - 1;
+                }
+
+
+            }
+        }
+
+    }])
     .filter('filterCategories', function($log) {
         return function(items,text) {
             var result = {};
-            $log.info(text);
+            // $log.info(text);
             if(text != "")
             {
                 angular.forEach(items, function(value, key) {
@@ -66,7 +122,7 @@ var app = angular.module('myApp', [
         }
         factory.setUserStatus = function (status) {
             factory.isLoggedIn = status;
-            $log.info(factory.isLoggedIn);
+            // $log.info(factory.isLoggedIn);
         }
         factory.getUserName = function () {
             return factory.userName;
@@ -82,8 +138,8 @@ var app = angular.module('myApp', [
         var factory = {};
         factory.getNumber = function(num) {
             var arr=[];
-            var i=1;
-            while(arr.push(i++)<num){};
+            var i=0;
+            while(i<num){arr.push(i);i++;};
             // $log.info(arr);
             return arr;
         }
@@ -91,12 +147,13 @@ var app = angular.module('myApp', [
     })
     .factory('ShoppingDetails', function ($rootScope, $log) {
         var factory = {};
-        factory.movies = {};
+        factory.movies = [];
         factory.getMovies = function () {
             return factory.movies;
         }
         factory.addMovie = function (movie) {
-            factory.movies.add(movie)
+            factory.movies.push(movie);
+            $log.info(factory.movies);
             $rootScope.$broadcast('updateShoping');
 
         }
@@ -117,7 +174,7 @@ var app = angular.module('myApp', [
             $scope.moviesNew = [];
         });
         $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
-            $log.info(response);
+            // $log.info(response);
             $scope.moviesNew = response;
         });
     })
@@ -126,13 +183,14 @@ var app = angular.module('myApp', [
         $scope.searchByCategory = "";
         $scope.searchByMovieName = "";
         $scope.movisByCategory = {};
+        $scope.amount = '1';
         angular.forEach($scope.categories, function (catagory) {
             // Here, the lang object will represent the lang you called the request on for the scope of the function
             $http.get("http://localhost:8888/movies/getNextMovies?limit=5&category=" + catagory + "&rownum=1").success(function (response) {
                 $scope.movisByCategory[catagory] = [];
                 $scope.movisByCategory[catagory] = response;
-                ShoppingDetails.movies = response;
-                $log.info(ShoppingDetails.movies);
+                // ShoppingDetails.movies = response;
+                // $log.info(ShoppingDetails.movies);
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
@@ -163,10 +221,12 @@ var app = angular.module('myApp', [
         };
         $scope.addAmountToMovie = function (movie,amount) {
             movie['amount'] = amount;
+            // $log.info(movie);
         }
         $scope.addMovieToCart = function (movie,amount) {
             $scope.addAmountToMovie(movie,amount);
-            ShoppingDetails.movies.push.apply(ShoppingDetails.movies, movie);
+            // $log.info(movie);
+            ShoppingDetails.addMovie(movie);
         }
 
         })
@@ -213,12 +273,12 @@ var app = angular.module('myApp', [
                 favourite_catergory2: $scope.favourite_catergory2,
                 username: $scope.username
             };
-            $log.info(first_name);
+            // $log.info(first_name);
             // var password= $scope.last_name;
             var res = $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
                 $scope.message = data;
-                $log.info(first_name);
+                // $log.info(first_name);
 
             });
             res.error(function (data, status, headers, config) {
@@ -236,7 +296,7 @@ var app = angular.module('myApp', [
         $scope.movie = movie;
         $http.get("http://localhost:8888/movies/movieDescription?movie_id=" + movie.movie_id).success(function (response) {
             $scope.movieDescription = response[0];
-            $log.info($scope.movieDescription);
+            // $log.info($scope.movieDescription);
         });
         $scope.ok = function () {
             $uibModalInstance.close($scope.selected.item);
