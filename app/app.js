@@ -91,7 +91,7 @@ var app = angular.module('myApp', [
             $scope.moviesNew = response;
         });
     })
-    .controller('moviesController', function ($scope, $http, $log, $uibModal) {
+    .controller('moviesController', function ($scope, $http, $log, $uibModal,ShoppingDetails) {
         $scope.categories = new Array('action', 'animation', 'sci-fi', 'comics');
         $scope.movisByCategory = {};
         angular.forEach($scope.categories, function (catagory) {
@@ -99,7 +99,8 @@ var app = angular.module('myApp', [
             $http.get("http://localhost:8888/movies/getNextMovies?limit=5&category=" + catagory + "&rownum=1").success(function (response) {
                 $scope.movisByCategory[catagory] = [];
                 $scope.movisByCategory[catagory] = response;
-                $log.info(response);
+                ShoppingDetails.movies = response;
+                $log.info(ShoppingDetails.movies);
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
@@ -204,7 +205,7 @@ var app = angular.module('myApp', [
         };
     })
     .controller('ShopingCartController', function ($scope,$log,$http,$location,ShoppingDetails){
-        $scope.movies={};
+        $scope.movies=ShoppingDetails.movies;
         $scope.clickContinueShoping=function () {
            $location.path('/Movies');
        }
@@ -237,3 +238,19 @@ var app = angular.module('myApp', [
 
     });
 
+// product class
+function movie(name, price,
+                 amount) {
+    this.name = sku; // product code (SKU = stock keeping unit)
+    this.name = name;
+    this.description = description;
+    this.price = price;
+    this.cal = cal;
+    this.nutrients = {
+        "Carotenoid": carot,
+        "Vitamin C": vitc,
+        "Folates": folate,
+        "Potassium": potassium,
+        "Fiber": fiber
+    };
+}
