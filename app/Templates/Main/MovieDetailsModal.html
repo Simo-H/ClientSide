@@ -44,7 +44,13 @@
                         <p>{{movieDescription.description}}</p>
                     </div>
                     <div class="ratings">
-                        <p class="pull-right">3 reviews</p>
+                        <p class="pull-right">
+                            <a ng-click="addMovieToCart(movie,amount)" class="pull-right nounderline" style="text-decoration: none !important;margin-left: 15px;cursor: pointer;">
+                                    <span class="glyphicon glyphicon-shopping-cart"
+                                          style="font-size: 25px;"></span><span class="glyphicon glyphicon-plus" style="font-size: 12px;"></span>
+                            </a>
+                        </p>
+                        <number-spin data-ng-model="amount"></number-spin>
                         <p>
                             <span ng-repeat="i in getNumber(movie.ranking)" class="glyphicon glyphicon-star"></span><span ng-repeat="i in getNumber(5-movie.ranking)" class="glyphicon glyphicon-star-empty"></span>
                         </p>

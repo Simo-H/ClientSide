@@ -77,9 +77,7 @@ var app = angular.module('myApp', [
                         '</span>'+
                     '</div>',
             link: function(scope, elem, attrs,$log){
-
                 scope.onlyNumbers = /^\d+$/;
-
                 scope.plus = function(){
                     if(scope.ngModel<999)
                         scope.ngModel = scope.ngModel*1 + 1;
@@ -88,14 +86,31 @@ var app = angular.module('myApp', [
                     if(scope.ngModel>0)
                         scope.ngModel = scope.ngModel - 1;
                 }
-
-
             }
         }
 
     }])
     .filter('filterCategories', function($log) {
         return function(items,text) {
+            var result = {};
+            // $log.info(text);
+            if(text != "")
+            {
+                angular.forEach(items, function(value, key) {
+                    if (key.includes(text)) {
+                        result[key] = value;
+                    }
+                });
+            }
+            else
+            {
+                result = items;
+            }
+            return result;
+        };
+    })
+    .filter('filterMovies', function($log) {
+        return function(items,text,category) {
             var result = {};
             // $log.info(text);
             if(text != "")
@@ -224,9 +239,13 @@ var app = angular.module('myApp', [
             // $log.info(movie);
         }
         $scope.addMovieToCart = function (movie,amount) {
-            $scope.addAmountToMovie(movie,amount);
-            // $log.info(movie);
-            ShoppingDetails.addMovie(movie);
+            if(amount > 0)
+            {
+                $scope.addAmountToMovie(movie,amount);
+                // $log.info(movie);
+                ShoppingDetails.addMovie(movie);
+            }
+
         }
 
         })
@@ -291,8 +310,8 @@ var app = angular.module('myApp', [
             $scope.headoffice = '';
         }
     })
-    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http,MoviesUtilities) {
-
+    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http,MoviesUtilities,ShoppingDetails) {
+        $scope.amount = '1';
         $scope.movie = movie;
         $http.get("http://localhost:8888/movies/movieDescription?movie_id=" + movie.movie_id).success(function (response) {
             $scope.movieDescription = response[0];
@@ -307,6 +326,18 @@ var app = angular.module('myApp', [
         };
         $scope.getNumber = function(num) {
             return MoviesUtilities.getNumber(num);
+        }
+        $scope.addAmountToMovie = function (movie,amount) {
+            movie['amount'] = amount;
+            // $log.info(movie);
+        }
+        $scope.addMovieToCart = function (movie,amount) {
+            if(amount > 0)
+            {
+                $scope.addAmountToMovie(movie,amount);
+                // $log.info(movie);
+                ShoppingDetails.addMovie(movie);
+            }
         }
     })
     .controller('ShopingCartController', function ($scope,$log,$http,$location,ShoppingDetails) {
