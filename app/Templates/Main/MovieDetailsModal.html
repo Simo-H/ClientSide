@@ -46,12 +46,7 @@
                     <div class="ratings">
                         <p class="pull-right">3 reviews</p>
                         <p>
-                            <span class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star-empty"></span>
-                            4.0 stars
+                            <span ng-repeat="i in getNumber(movie.ranking)" class="glyphicon glyphicon-star"></span><span ng-repeat="i in getNumber(5-movie.ranking)" class="glyphicon glyphicon-star-empty"></span>
                         </p>
                     </div>
                 </div>

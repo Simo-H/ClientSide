@@ -38,6 +38,25 @@ var app = angular.module('myApp', [
             })
         .otherwise({redirectTo: 'index.html'});
 }])
+    .filter('filterCategories', function($log) {
+        return function(items,text) {
+            var result = {};
+            $log.info(text);
+            if(text != "")
+            {
+                angular.forEach(items, function(value, key) {
+                    if (key.includes(text)) {
+                        result[key] = value;
+                    }
+                });
+            }
+            else
+            {
+                result = items;
+            }
+            return result;
+        };
+    })
     .factory('UserDetails', function ($rootScope, $log) {
         var factory = {};
         factory.isLoggedIn = false;
@@ -59,6 +78,17 @@ var app = angular.module('myApp', [
         }
         return factory;
     })
+    .factory('MoviesUtilities', function ($log) {
+        var factory = {};
+        factory.getNumber = function(num) {
+            var arr=[];
+            var i=1;
+            while(arr.push(i++)<num){};
+            // $log.info(arr);
+            return arr;
+        }
+        return factory;
+    })
     .factory('ShoppingDetails', function ($rootScope, $log) {
         var factory = {};
         factory.movies = {};
@@ -75,9 +105,7 @@ var app = angular.module('myApp', [
             $rootScope.$broadcast('updateShoping');
 
         }
-        // factory.addamount= function () {
-        //
-        // }
+
         return factory;
     })
     .controller('homeController', function ($scope, $http, $log, UserDetails) {
@@ -95,6 +123,8 @@ var app = angular.module('myApp', [
     })
     .controller('moviesController', function ($scope, $http, $log, $uibModal,ShoppingDetails) {
         $scope.categories = new Array('action', 'animation', 'sci-fi', 'comics');
+        $scope.searchByCategory = "";
+        $scope.searchByMovieName = "";
         $scope.movisByCategory = {};
         angular.forEach($scope.categories, function (catagory) {
             // Here, the lang object will represent the lang you called the request on for the scope of the function
@@ -103,10 +133,6 @@ var app = angular.module('myApp', [
                 $scope.movisByCategory[catagory] = response;
                 ShoppingDetails.movies = response;
                 $log.info(ShoppingDetails.movies);
-
-
-
-
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
@@ -132,8 +158,11 @@ var app = angular.module('myApp', [
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
+        $scope.getNumber = function(num) {
+            return MoviesUtilities.getNumber(num);
+        }
 
-    })
+        })
     .controller('LoginController', function ($scope, $http, $log, UserDetails) {
         $scope.Login = function () {
             var login = {
@@ -195,7 +224,7 @@ var app = angular.module('myApp', [
             $scope.headoffice = '';
         }
     })
-    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http) {
+    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http,MoviesUtilities) {
 
         $scope.movie = movie;
         $http.get("http://localhost:8888/movies/movieDescription?movie_id=" + movie.movie_id).success(function (response) {
@@ -209,6 +238,9 @@ var app = angular.module('myApp', [
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+        $scope.getNumber = function(num) {
+            return MoviesUtilities.getNumber(num);
+        }
     })
     .controller('ShopingCartController', function ($scope,$log,$http,$location,ShoppingDetails){
         $scope.totalPrice=0;
