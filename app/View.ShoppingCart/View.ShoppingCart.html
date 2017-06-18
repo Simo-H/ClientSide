@@ -37,27 +37,32 @@
                                 <h6><strong>{{movie.price_dollars}}$ <span class="text-muted">x</span></strong></h6>
                             </div>
                             <div class="col-xs-4">
-                                <input type="text" class="form-control input-sm" value=>{{}}
+                                <input type="text" class="form-control input-sm" value={{movie.amount}}>
                             </div>
                             <div class="col-xs-2">
                                 <button type="button" class="btn btn-link btn-xs">
                                     <span class="glyphicon glyphicon-trash" ng-click="deleteMovieShopingCart(movie)" > </span>
                                 </button>
                             </div>
+                            <hr>
+
                         </div>
 
                         <hr>
+                        <div>
 
+
+                        </div>
                     </div>
 
                     <div class="row">
                         <div class="text-center">
                             <div class="col-xs-9">
-                                <h6 class="text-right">Added items? </h6>
+                                <h6 class="text-right">  </h6>
                             </div>
                             <div class="col-xs-3">
                                 <button type="button" class="btn btn-default btn-sm btn-block">
-                                    Update cart
+                                    Previous Orders
                                 </button>
                             </div>
                         </div>
@@ -66,7 +71,7 @@
                 <div class="panel-footer">
                     <div class="row text-center">
                         <div class="col-xs-9">
-                            <h4 class="text-right">Total <strong>$50.00</strong></h4>
+                            <h4 class="text-right">Total <strong>{{totalPrice}}</strong>$$$$$$$$$$$$$$$</h4>
                         </div>
                         <div class="col-xs-3">
                             <button type="button" class="btn btn-success btn-block">

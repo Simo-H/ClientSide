@@ -75,7 +75,9 @@ var app = angular.module('myApp', [
             $rootScope.$broadcast('updateShoping');
 
         }
-
+        // factory.addamount= function () {
+        //
+        // }
         return factory;
     })
     .controller('homeController', function ($scope, $http, $log, UserDetails) {
@@ -101,6 +103,10 @@ var app = angular.module('myApp', [
                 $scope.movisByCategory[catagory] = response;
                 ShoppingDetails.movies = response;
                 $log.info(ShoppingDetails.movies);
+
+
+
+
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
@@ -205,14 +211,34 @@ var app = angular.module('myApp', [
         };
     })
     .controller('ShopingCartController', function ($scope,$log,$http,$location,ShoppingDetails){
+        $scope.totalPrice=0;
         $scope.movies=ShoppingDetails.movies;
+        angular.forEach($scope.movies, function (movie) {
+            movie['amount'] = 2;
+            $log.info(movie);
+        })
+        angular.forEach($scope.movies, function (movie) {
+            $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
+            // $log.info(movie);
+        })
+
         $scope.clickContinueShoping=function () {
            $location.path('/Movies');
        }
         $scope.$on('updateShoping', function () {
             $scope.movies= ShoppingDetails.getMovies();
+            angular.forEach($scope.movies, function (movie) {
+                $scope.totalPrice=movie.amount  +$scope.totalPrice;
+                // $log.info(movie);
+            })
 
         });
+        $scope.delete = function (movie) {
+            var delmovie = $scope.movies[movie];
+            API.deleteMovieShopingCart({ id: delmovie.movie_id }, function (success) {
+                $scope.movies.splice(person, 1);
+            });
+        };
 
 
     })
@@ -225,32 +251,10 @@ var app = angular.module('myApp', [
 
         });
 
-        $scope.delete = function (person) {
-            var delmovie = $scope.movies[person];
-            API.deleteMovieShopingCart({ id: delmovie.id }, function (success) {
-                $scope.movies.splice(person, 1);
-            });
-        };
+
 
         // $scope.setUserName($scope.UserName);
         // $log.info($scope.UserName);
 
 
     });
-
-// product class
-function movie(name, price,
-                 amount) {
-    this.name = sku; // product code (SKU = stock keeping unit)
-    this.name = name;
-    this.description = description;
-    this.price = price;
-    this.cal = cal;
-    this.nutrients = {
-        "Carotenoid": carot,
-        "Vitamin C": vitc,
-        "Folates": folate,
-        "Potassium": potassium,
-        "Fiber": fiber
-    };
-}
