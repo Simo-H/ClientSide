@@ -56,10 +56,11 @@ var app = angular.module('myApp', [
             }
         };
     })
-    .directive('numberSpin', [function(){
+    .directive('numberSpin', [function($log){
 
         return {
             restrict: 'E',
+            require: 'ngModel',
             scope: {
                 "ngModel": '='
             },
@@ -69,24 +70,32 @@ var app = angular.module('myApp', [
                              '<span style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"; class="glyphicon glyphicon-minus"; ></span>'+
                             '</button>'+
                         '</span>'+
-                        '<input numeric-only data-ng-model="ngModel" ng-pattern="onlyNumbers" type="text" name="quant[2]" style="padding: 0;margin: 0;font-size: 15px;text-align: center;height: 20px" class="form-control input-number" value=1 min="1" max="100">'+
+                        '<input numeric-only data-ng-model="ngModel"  ng-pattern="onlyNumbers" type="text" name="quant[2]" style="padding: 0;margin: 0;font-size: 15px;text-align: center;height: 20px" class="form-control input-number" value=1 min="1" max="100">'+
                         '<span class="input-group-btn">'+
                             '<button data-ng-click="plus()" type="button" class="btn btn-success btn-number"  style="width: 10px;padding-bottom: 10px;padding:0px;top: 0;margin-top:0;height: 20px " data-type="plus" data-field="quant[2]">'+
                                 '<span class="glyphicon glyphicon-plus" style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"></span>'+
                             '</button>'+
                         '</span>'+
                     '</div>',
-            link: function(scope, elem, attrs,$log){
+            link: function(scope, elem, attrs,ctrl){
 
                 scope.onlyNumbers = /^\d+$/;
 
                 scope.plus = function(){
-                    if(scope.ngModel<999)
+                    if(scope.ngModel<999){
                         scope.ngModel = scope.ngModel*1 + 1;
+                        scope.updateModel(scope.ngModel);
+                    }
                 }
                 scope.minus = function(){
-                    if(scope.ngModel>0)
+                    if(scope.ngModel>0){
                         scope.ngModel = scope.ngModel - 1;
+                        scope.updateModel();
+                    }
+                }
+                scope.updateModel = function()
+                {
+                    ctrl.$setViewValue(scope.ngModel);
                 }
 
 
@@ -149,7 +158,10 @@ var app = angular.module('myApp', [
         var factory = {};
         factory.movies = [];
         factory.getMovies = function () {
+            $log.info(factory.movies);
+
             return factory.movies;
+
         }
         factory.addMovie = function (movie) {
             factory.movies.push(movie);
@@ -158,7 +170,8 @@ var app = angular.module('myApp', [
 
         }
         factory.removeMovie = function (movie) {
-            movies.delete(movie);
+            var index = factory.movies.indexOf(movie);
+            factory.movies.splice(index, 1);
             $rootScope.$broadcast('updateShoping');
 
         }
@@ -174,7 +187,7 @@ var app = angular.module('myApp', [
             $scope.moviesNew = [];
         });
         $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
-            // $log.info(response);
+            $log.info(response);
             $scope.moviesNew = response;
         });
     })
@@ -183,14 +196,13 @@ var app = angular.module('myApp', [
         $scope.searchByCategory = "";
         $scope.searchByMovieName = "";
         $scope.movisByCategory = {};
-        $scope.amount = '1';
         angular.forEach($scope.categories, function (catagory) {
             // Here, the lang object will represent the lang you called the request on for the scope of the function
             $http.get("http://localhost:8888/movies/getNextMovies?limit=5&category=" + catagory + "&rownum=1").success(function (response) {
                 $scope.movisByCategory[catagory] = [];
                 $scope.movisByCategory[catagory] = response;
-                // ShoppingDetails.movies = response;
-                // $log.info(ShoppingDetails.movies);
+                ShoppingDetails.movies = response;
+                $log.info(ShoppingDetails.movies);
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
@@ -314,7 +326,6 @@ var app = angular.module('myApp', [
         $scope.movies=ShoppingDetails.movies;
         angular.forEach($scope.movies, function (movie) {
             movie['amount'] = 2;
-            $log.info(movie);
         })
         angular.forEach($scope.movies, function (movie) {
             $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
@@ -324,21 +335,32 @@ var app = angular.module('myApp', [
         $scope.clickContinueShoping=function () {
            $location.path('/Movies');
        }
-        $scope.$on('updateShoping', function () {
+
+       $scope.$on('updateShoping', function () {
+            $scope.totalPrice=0;
             $scope.movies= ShoppingDetails.getMovies();
-            angular.forEach($scope.movies, function (movie) {
-                $scope.totalPrice=movie.amount  +$scope.totalPrice;
-                // $log.info(movie);
+           angular.forEach($scope.movies, function (movie) {
+               $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
             })
 
         });
-        $scope.delete = function (movie) {
-            var delmovie = $scope.movies[movie];
-            API.deleteMovieShopingCart({ id: delmovie.movie_id }, function (success) {
-                $scope.movies.splice(person, 1);
-            });
-        };
+       $scope.change=function(){
+           $log.info("1");
 
+           $scope.totalPrice=0;
+
+            angular.forEach($scope.movies, function (movie) {
+                $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
+            })
+        }
+        $scope.deleteMovieShopingCart = function (movie) {
+            ShoppingDetails.removeMovie(movie);
+        };
+        $scope.Madeorder=function(){
+
+
+/////////////////////add locstion////////////
+        }
 
     })
     .controller('NavController', function ($scope, UserDetails, $location) {
