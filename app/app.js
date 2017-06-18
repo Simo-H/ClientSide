@@ -34,7 +34,7 @@ var app = angular.module('myApp', [
         .when('/ShoppingCart',
             {
                 templateUrl: 'View.ShoppingCart/View.ShoppingCart.html',
-                controller: ''
+                controller: 'ShopingCartController'
             })
         .otherwise({redirectTo: 'index.html'});
 }])
@@ -59,6 +59,25 @@ var app = angular.module('myApp', [
         }
         return factory;
     })
+    .factory('ShoppingDetails', function ($rootScope, $log) {
+        var factory = {};
+        factory.movies = {};
+        factory.getMovies = function () {
+            return factory.movies;
+        }
+        factory.addMovie = function (movie) {
+            factory.movies.add(movie)
+            $rootScope.$broadcast('updateShoping');
+
+        }
+        factory.removeMovie = function (movie) {
+            movies.delete(movie);
+            $rootScope.$broadcast('updateShoping');
+
+        }
+
+        return factory;
+    })
     .controller('homeController', function ($scope, $http, $log, UserDetails) {
         $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
             // $log.info(response);
@@ -80,6 +99,7 @@ var app = angular.module('myApp', [
             $http.get("http://localhost:8888/movies/getNextMovies?limit=5&category=" + catagory + "&rownum=1").success(function (response) {
                 $scope.movisByCategory[catagory] = [];
                 $scope.movisByCategory[catagory] = response;
+                $log.info(response);
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
@@ -183,6 +203,18 @@ var app = angular.module('myApp', [
             $uibModalInstance.dismiss('cancel');
         };
     })
+    .controller('ShopingCartController', function ($scope,$log,$http,$location,ShoppingDetails){
+        $scope.movies={};
+        $scope.clickContinueShoping=function () {
+           $location.path('/Movies');
+       }
+        $scope.$on('updateShoping', function () {
+            $scope.movies= ShoppingDetails.getMovies();
+
+        });
+
+
+    })
     .controller('NavController', function ($scope, UserDetails, $location) {
         $scope.userName = UserDetails.getUserName();
         $scope.$on('updateUser', function () {
@@ -191,6 +223,13 @@ var app = angular.module('myApp', [
             $location.path('/');
 
         });
+
+        $scope.delete = function (person) {
+            var delmovie = $scope.movies[person];
+            API.deleteMovieShopingCart({ id: delmovie.id }, function (success) {
+                $scope.movies.splice(person, 1);
+            });
+        };
 
         // $scope.setUserName($scope.UserName);
         // $log.info($scope.UserName);
