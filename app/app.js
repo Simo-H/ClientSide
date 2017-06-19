@@ -13,8 +13,8 @@ var app = angular.module('myApp', [
     $routeProvider
         .when('/',
             {
-                templateUrl: 'View.Home/View.Home.html',
-                controller: 'homeController'
+                templateUrl: 'View.Home/View.Home.html',//view
+                controller: 'homeController'//controller
             })
         .when('/Login',
             {
@@ -77,7 +77,7 @@ var app = angular.module('myApp', [
                              '<span style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"; class="glyphicon glyphicon-minus"; ></span>'+
                             '</button>'+
                         '</span>'+
-                        '<input numeric-only data-ng-model="ngModel"  ng-pattern="onlyNumbers" type="text" name="quant[2]" style="padding: 0;margin: 0;font-size: 15px;text-align: center;height: 20px" class="form-control input-number" value=1 min="1" max="100">'+
+                        '<input numeric-only data-ng-model="ngModel"  ng-pattern="onlyNumbers" ng-change="updateModel()" type="text" name="quant[2]" style="padding: 0;margin: 0;font-size: 15px;text-align: center;height: 20px" class="form-control input-number" value=1 min="1" max="100">'+
                         '<span class="input-group-btn">'+
                             '<button data-ng-click="plus()" type="button" class="btn btn-success btn-number"  style="width: 10px;padding-bottom: 10px;padding:0px;top: 0;margin-top:0;height: 20px " data-type="plus" data-field="quant[2]">'+
                                 '<span class="glyphicon glyphicon-plus" style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"></span>'+
