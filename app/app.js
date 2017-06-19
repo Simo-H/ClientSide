@@ -31,11 +31,18 @@ var app = angular.module('myApp', [
                 templateUrl: 'View.Movies/View.Movies.html',
                 controller: 'moviesController'
             })
+
         .when('/ShoppingCart',
             {
                 templateUrl: 'View.ShoppingCart/View.ShoppingCart.html',
                 controller: 'ShopingCartController'
             })
+        .when('/OrdersList',
+            {
+                templateUrl:'View.OrdersList/View.OrderList.html',
+                controller: 'OrderListrController'
+            })
+
         .otherwise({redirectTo: 'index.html'});
 }])
     .directive('numericOnly', function(){
@@ -142,11 +149,19 @@ var app = angular.module('myApp', [
         var factory = {};
         factory.isLoggedIn = false;
         factory.userName = "Guest";
+        factory.user_id;
         factory.getUserStatus = function () {
             return factory.isLoggedIn;
         }
+        factory.getUserId = function () {
+            return factory.user_id;
+        }
         factory.setUserStatus = function (status) {
             factory.isLoggedIn = status;
+            // $log.info(factory.isLoggedIn);
+        }
+        factory.setUserId = function (userId) {
+            factory.user_id = userId;
             // $log.info(factory.isLoggedIn);
         }
         factory.getUserName = function () {
@@ -273,6 +288,7 @@ var app = angular.module('myApp', [
             res.success(function (data, status, headers, config) {
                 // $log.info(data[0].username);
                 UserDetails.setUserStatus(true);
+                UserDetails.setUserId(data[0].client_id);
                 UserDetails.setUserName(data[0].username);
                 // UserDetails.setUserStatus(true);
                 // $log.info(UserDetails.getUserStatus())
@@ -358,9 +374,6 @@ var app = angular.module('myApp', [
         $scope.totalPrice=0;
         $scope.movies=ShoppingDetails.movies;
         angular.forEach($scope.movies, function (movie) {
-            movie['amount'] = 2;
-        })
-        angular.forEach($scope.movies, function (movie) {
             $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
             // $log.info(movie);
         })
@@ -389,12 +402,35 @@ var app = angular.module('myApp', [
         $scope.deleteMovieShopingCart = function (movie) {
             ShoppingDetails.removeMovie(movie);
         };
-        $scope.Madeorder=function(){
+        $scope.Madeorder=function(movies){
+            var res = $http.post('http://localhost:8888/orders//previousOrders', movies, {headers: {'Content-Type': 'application/json'}});
+            res.success(function (data, status, headers, config) {
+                $log.info(data[0].username);
+
+                // UserDetails.setUserStatus(true);
+                // $log.info(UserDetails.getUserStatus())
+                // NavController.updateUserName();
+                // $log.info(UserDetails.getUserName());
+            });
 
 
-/////////////////////add locstion////////////
+        }
+        $scope.getorderlist=function(){
+            $location.path('/OrdersList');
+
         }
 
+    })
+    .controller('OrderListrController',function($scope,$log,$http,$location,UserDetails){
+        $scope.OrdersList=[];
+        $http.get("http://localhost:8888/orders/previousOrders?client_id="+UserDetails.user_id).success(function (response) {
+            $scope.OrdersList = response;
+
+        });
+        $scope.goback=function(){
+            $location.path('/ShoppingCart');
+
+        }
     })
     .controller('NavController', function ($scope, UserDetails, $location) {
         $scope.userName = UserDetails.getUserName();

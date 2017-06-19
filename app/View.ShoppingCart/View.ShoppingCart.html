@@ -65,7 +65,7 @@
                                 <h6 class="text-right">  </h6>
                             </div>
                             <div class="col-xs-3">
-                                <button type="button" class="btn btn-default btn-sm btn-block" >
+                                <button type="button" class="btn btn-default btn-sm btn-block" ng-click="getorderlist()" >
                                     Previous Orders
                                 </button>
                             </div>
@@ -78,7 +78,7 @@
                             <h4 class="text-right">Total <strong>{{totalPrice}}</strong>$</h4>
                         </div>
                         <div class="col-xs-3">
-                            <button type="button" ng-disabled="frm.$invalid"  class="btn btn-success btn-block"  >
+                            <button type="button" ng-disabled="frm.$invalid"  class="btn btn-success btn-block" ng-click="Madeorder(movies)" >
                                 Checkout
                             </button>
                         </div>
