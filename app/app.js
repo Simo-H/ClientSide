@@ -403,25 +403,12 @@ var app = angular.module('myApp', [
            $scope.totalPrice=0;
 
             angular.forEach($scope.movies, function (movie) {
-                $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
-            })
+               $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
+           })
         }
         $scope.deleteMovieShopingCart = function (movie) {
             ShoppingDetails.removeMovie(movie);
         };
-        $scope.Madeorder=function(movies){
-            var res = $http.post('http://localhost:8888/orders//previousOrders', movies, {headers: {'Content-Type': 'application/json'}});
-            res.success(function (data, status, headers, config) {
-                $log.info(data[0].username);
-
-                // UserDetails.setUserStatus(true);
-                // $log.info(UserDetails.getUserStatus())
-                // NavController.updateUserName();
-                // $log.info(UserDetails.getUserName());
-            });
-
-
-        }
         $scope.getorderlist=function(){
             $location.path('/OrdersList');
 
@@ -445,44 +432,47 @@ var app = angular.module('myApp', [
 
         }
     })
-    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log, $http,ShoppingDetails,UserDetails) {
-         // $scope.loadedAt =this.setDate(Date() + parseInt(7));
-        //  $scope.selectedDate = new Date();
-        // $scope.selectedDate=$scope.selectedDate.getDate();
-        // $scope.data = {
-        //     theDate: loadedAt,
-        // };
-        //
-        // $scope.currentDate = new Date();
-        //
+    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log,$location, $http,ShoppingDetails,UserDetails) {
+        $scope.pay="dollar";
+        $scope.payment;
+        $scope.totalPrice=0
+        $scope.movies=ShoppingDetails.movies;
+        angular.forEach($scope.movies, function (movie) {
+            $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
+        })
+        $scope.payment=$scope.totalPrice;
+        $scope.currentDate = new Date();
+        $scope.currentDate = $scope.currentDate.setDate($scope.currentDate.getDate() + 7);
+        $scope.pay;
+        $scope.change=function(){
+            $log.info('Modal dismissed at: ' );
+
+            if($scope.pay=="dollar"){
+                $scope.payment=$scope.totalPrice;
+
+            }
+            else{
+                $scope.payment=parseInt($scope.totalPrice)/3.8;
+
+            }
+        }
         // $scope.cancel=function(){
-        //     $location.path('/ShoppingCart');
-        //
+        //     // $location.path('/ShoppingCart');
+        //     this.$hide();
         // }
-        // $scope.submit=function(){
-        //     var Date=this.setDate(Date() + parseInt(7));
-        //     $log.info(data.theDate);
-        //
-        //     if(data.theDate< Date)
-        //     {
-        //         $log.info("gffgb");
-        //         alert("Date unvalid");
-        //     }
-        //     else
-        //     {
-        //         var res = $http.post('http://localhost:8888/orders/addOrder', ShoppingDetails.movies, {headers: {'Content-Type': 'application/json'}});
-        //         res.success(function (data, status, headers, config) {
-        //             $scope.message = data;
-        //             alert("good");
-        //
-        //             // $log.info(first_name);
-        //
-        //         });
-        //         res.error(function (data, status, headers, config) {
-        //             alert("failure message: " + JSON.stringify({data: data}));
-        //         });
-        //     }
-        // }
+        $scope.submit=function(){
+            var res = $http.post('http://localhost:8888/orders.js/addOrder', $scope.movies, {headers: {'Content-Type': 'application/json'}});
+            $log.info("cheack");
+
+            res.success(function (data, status, headers, config) {
+                alert("done: " + JSON.stringify({data: data}));
+
+            });
+            res.error(function (data, status, headers, config) {
+                alert("failure message: " + JSON.stringify({data: data}));
+            });
+        }
+
     })
     .controller('NavController', function ($scope, UserDetails, $location) {
         $scope.userName = UserDetails.getUserName();

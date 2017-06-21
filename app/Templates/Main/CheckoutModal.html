@@ -46,30 +46,61 @@
 
                         <p>chose data for shipment</p>
                         <div class="form-group">
-                            {{selectedDate}}
-                            <input ng-model="selectedDate" required  pattern="(?=.*\d)(?=.*[0-9]).{10,}"  placeholder="yyyy-MM-dd"  min="{{$scope.loadedAt | date:'yyyy-MM-dd'}}" id="theDate" name="theDate" type="date" class="form-control inputpass form-control input-lg" /> </p>
+
+                            <input ng-model="selectedDate" required  pattern="(?=.*\d)(?=.*[0-9]).{10,}"  placeholder="yyyy-MM-dd"  required min="{{currentDate | date:'yyyy-MM-dd'}}" id="theDate" name="orderdate" type="date" class="form-control inputpass form-control input-lg" /> </p>
                             <span ng-show="frm.orderdate.$dirty&&frm.orderdate.$error.required">required</span>
                             <span ng-show="frm.orderdate.$dirty&&frm.orderdate.$error.minlength">too short</span>
 
+
+
+                            <span ng-show="form.Dateship.$dirty && form.Dateship.$invalid">
+                                <span ng-show="form.Dateship.$error.required">Start Date is required</span>
+                                <span ng-show="form.Dateship.$error.min">Start Date should not be less than current date</span>
+                            </span>
+
+
+
+
                         </div>
+
+
+
+
+
+
 
                         <div class="form-group">
                             <input ng-model="credit_card" required  pattern="(?=.*\d)(?=.*[0-9]).{9,}"  ng-minlength="9" name="credit_card" type="text" class="form-control inputpass form-control input-lg" placeholder="Credit card*" /> </p>
                             <span ng-show="frm.credit_card.$dirty&&frm.credit_card.$error.required">required</span>
                             <span ng-show="frm.credit_card.$dirty&&frm.credit_card.$error.minlength">too short</span>
+                            <span ng-show="frm.credit_card.$dirty&&frm.credit_card.$error.pattern">must contain only numbers</span>
+
 
                         </div>
 
 
                         <div class="form-group">
-                            <input type="text" ng-model="CVC" required required  ng-minlength="3" name="CVC" id="add" class="form-control input-lg" placeholder="CVC*">
+                            <input type="text" ng-model="CVC" required required  pattern="(?=.*\d)(?=.*[0-9]).{3,}" ng-minlength="3" ng-maxlength="4" name="CVC" id="add" class="form-control input-lg" placeholder="CVC*">
                             <span ng-show="frm.CVC.$dirty&&frm.CVC.$error.required">required</span>
                             <span ng-show="frm.CVC.$dirty&&frm.CVC.$error.minlength">too short</span>
+                            <span ng-show="frm.CVC.$dirty&&frm.CVC.$error.maxlength">too long</span>
+                            <span ng-show="frm.CVC.$dirty&&frm.CVC.$error.pattern">must contain only numbers</span>
+
 
                         </div>
+
+                        <div>
+                            <input ng-model="pay" type="radio" name="pay" value="dollar" checked ng-change="change()"> Dollars<br>
+                            <input ng-model="pay" type="radio" name="pay" value="nis" ng-change="change()"> NIS<br>
+                        </div>
+
+                        <div class="col-xs-9">
+                            <h4 class="text-right"> Total price: <strong>{{payment| number : 2}}</strong>{{pay}}</h4>
+                        </div>
+
                 </form>
-                    <button  ng-click="submit()" ng-disabled="frm.$invalid"  class="btn btn-info btn-block" > Register</button>
-                    <button  ng-click="cancel()"   class="btn btn-info btn-block"  > cancel</button>
+                    <button  ng-click="submit()" ng-disabled="frm.$invalid"  class="btn btn-info btn-block" > Checkout</button>
+                    <!--<button  ng-click="cancel()"   class="btn btn-info btn-block"  > cancel</button>-->
 
                 </div>
             </div>
