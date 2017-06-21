@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Shop Item - Start Bootstrap Template</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/shop-item.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<!--&lt;!&ndash; Page Content &ndash;&gt;-->
+<div >
+
+
+    <div class="row centered-form container-fluide">
+        <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" >Checkout </h3>
+                </div>
+                <div class="panel-body">
+
+                    <form role="form" name="frm" >
+
+
+
+                        <p>chose data for shipment</p>
+                        <div class="form-group">
+                            {{selectedDate}}
+                            <input ng-model="selectedDate" required  pattern="(?=.*\d)(?=.*[0-9]).{10,}"  placeholder="yyyy-MM-dd"  min="{{$scope.loadedAt | date:'yyyy-MM-dd'}}" id="theDate" name="theDate" type="date" class="form-control inputpass form-control input-lg" /> </p>
+                            <span ng-show="frm.orderdate.$dirty&&frm.orderdate.$error.required">required</span>
+                            <span ng-show="frm.orderdate.$dirty&&frm.orderdate.$error.minlength">too short</span>
+
+                        </div>
+
+                        <div class="form-group">
+                            <input ng-model="credit_card" required  pattern="(?=.*\d)(?=.*[0-9]).{9,}"  ng-minlength="9" name="credit_card" type="text" class="form-control inputpass form-control input-lg" placeholder="Credit card*" /> </p>
+                            <span ng-show="frm.credit_card.$dirty&&frm.credit_card.$error.required">required</span>
+                            <span ng-show="frm.credit_card.$dirty&&frm.credit_card.$error.minlength">too short</span>
+
+                        </div>
+
+
+                        <div class="form-group">
+                            <input type="text" ng-model="CVC" required required  ng-minlength="3" name="CVC" id="add" class="form-control input-lg" placeholder="CVC*">
+                            <span ng-show="frm.CVC.$dirty&&frm.CVC.$error.required">required</span>
+                            <span ng-show="frm.CVC.$dirty&&frm.CVC.$error.minlength">too short</span>
+
+                        </div>
+                </form>
+                    <button  ng-click="submit()" ng-disabled="frm.$invalid"  class="btn btn-info btn-block" > Register</button>
+                    <button  ng-click="cancel()"   class="btn btn-info btn-block"  > cancel</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+
+<!--<head>-->
+    <!--<link data-require="bootstrap-css@*" data-semver="3.3.1" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />-->
+    <!--<script data-require="angular.js@*" data-semver="1.3.7" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.7/angular.js"></script>-->
+    <!--<script data-require="angular-credit-cards@*" data-semver="3.0.1" src="https://rawgit.com/bendrucker/angular-credit-cards/v3.0.1/release/angular-credit-cards.js"></script>-->
+    <!--<link rel="stylesheet" href="style.css" />-->
+    <!--<script src="app.js"></script>-->
+<!--</head>-->
+
+<!--<body ng-app="ccDemoApp">-->
+<!--<div class="container" style="text-align: center;">-->
+    <!--<h1 >-->
+        <!--Checkout-->
+
+
+    <!--</h1>-->
+    <!--<form name="ccForm">-->
+        <!--<div class="form-group">-->
+            <!--<label for="card-number">Card Number</label>-->
+            <!--<input type="text" class="form-control" id="cardNumber" cc-number cc-eager-type name="ccNumber" ng-model="card.number">-->
+        <!--</div>-->
+        <!--<table class="table">-->
+            <!--<tr style="text-align: center;">-->
+                <!--<th style="text-align: center;">Valid</th>-->
+                <!--<th style="text-align: center;">Eager Type</th>-->
+                <!--<th style="text-align: center;">Type</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>-->
+                    <!--{{ccForm.ccNumber.$valid | yesNo}}-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--{{ccForm.ccNumber.$ccEagerType || 'Unknown'}}-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--{{ccForm.ccNumber.$ccType || 'Unknown'}}-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</table>-->
+        <!--<div class="form-group">-->
+            <!--<label for="cvc">CVC</label>-->
+            <!--<input type="text" class="form-control" id="cvc" cc-cvc cc-type="ccForm.ccNumber.$ccType" name="ccCvc" ng-model="card.cvc">-->
+        <!--</div>-->
+        <!--<table class="table">-->
+            <!--<tr>-->
+                <!--<th style="text-align: center;">Valid</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>-->
+                    <!--{{ccForm.ccCvc.$valid | yesNo}}-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</table>-->
+        <!--<div class="form-group">-->
+            <!--<label for="card-number">Expiration</label>-->
+            <!--<div class="row" cc-exp>-->
+                <!--<div class="col-xs-3">-->
+                <!--</div>-->
+                <!--<div class="col-xs-3">-->
+                    <!--<input placeholder="MM" type="text" class="form-control" cc-exp-month name="ccExpMonth" ng-model="card.expiration.month">-->
+                <!--</div>-->
+                <!--<div class="col-xs-3">-->
+                    <!--<input placeholder="YY" type="text" class="form-control" cc-exp-year name="ccExpYear" ng-model="card.expiration.year">-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<table class="table">-->
+            <!--<tr>-->
+                <!--<th style="text-align: center;">Valid Month</th>-->
+                <!--<th style="text-align: center;">Valid Year</th>-->
+                <!--<th style="text-align: center;">Valid Pair</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>-->
+                    <!--{{ccForm.ccExpMonth.$valid | yesNo}}-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--{{ccForm.ccExpYear.$valid | yesNo}}-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--{{!ccForm.$error.ccExp | yesNo}}-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</table>-->
+        <!--<label for="card-number">Delivery date </label>-->
+        <!--<div class="row" cc-exp>-->
+
+            <!--<div class="col-xs-3" >-->
+                <!--<label></label>-->
+            <!--</div>-->
+
+            <!--<div class="col-xs-5" align="right" >-->
+                <!--<label><input style="text-align:right ;" id="meeting"  type="date" value="2017-06-24"/></label>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</form>-->
+<!--</div>-->
+<!--</body>-->
+
+<!--</html>-->

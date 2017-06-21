@@ -156,6 +156,8 @@ var app = angular.module('myApp', [
         factory.isLoggedIn = false;
         factory.userName = "Guest";
         factory.user_id;
+        factory.dollar=true;
+
         factory.getUserStatus = function () {
             return factory.isLoggedIn;
         }
@@ -389,7 +391,7 @@ var app = angular.module('myApp', [
             }
         }
     })
-    .controller('ShopingCartController', function ($scope,$log,$http,$location,ShoppingDetails){
+    .controller('ShopingCartController', function ($scope,$log,$http,$location,$uibModal,ShoppingDetails){
         $scope.totalPrice=0;
         $scope.movies=ShoppingDetails.movies;
         angular.forEach($scope.movies, function (movie) {
@@ -438,6 +440,12 @@ var app = angular.module('myApp', [
             $location.path('/OrdersList');
 
         }
+        $scope.gotoCheckout=function(){
+            var modalInstance = $uibModal.open({
+                templateUrl: 'Templates/Main/CheckoutModal.html',
+                controller: 'CheckoutModalController',
+            });
+        }
 
     })
     .controller('OrderListrController',function($scope,$log,$http,$location,UserDetails, $uibModal){
@@ -482,6 +490,45 @@ var app = angular.module('myApp', [
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
+    })
+    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log, $http,ShoppingDetails,UserDetails) {
+         // $scope.loadedAt =this.setDate(Date() + parseInt(7));
+        //  $scope.selectedDate = new Date();
+        // $scope.selectedDate=$scope.selectedDate.getDate();
+        // $scope.data = {
+        //     theDate: loadedAt,
+        // };
+        //
+        // $scope.currentDate = new Date();
+        //
+        // $scope.cancel=function(){
+        //     $location.path('/ShoppingCart');
+        //
+        // }
+        // $scope.submit=function(){
+        //     var Date=this.setDate(Date() + parseInt(7));
+        //     $log.info(data.theDate);
+        //
+        //     if(data.theDate< Date)
+        //     {
+        //         $log.info("gffgb");
+        //         alert("Date unvalid");
+        //     }
+        //     else
+        //     {
+        //         var res = $http.post('http://localhost:8888/orders/addOrder', ShoppingDetails.movies, {headers: {'Content-Type': 'application/json'}});
+        //         res.success(function (data, status, headers, config) {
+        //             $scope.message = data;
+        //             alert("good");
+        //
+        //             // $log.info(first_name);
+        //
+        //         });
+        //         res.error(function (data, status, headers, config) {
+        //             alert("failure message: " + JSON.stringify({data: data}));
+        //         });
+        //     }
+        // }
     })
     .controller('NavController', function ($scope, UserDetails, $location) {
         $scope.userName = UserDetails.getUserName();
