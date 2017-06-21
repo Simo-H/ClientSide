@@ -6,7 +6,9 @@ var app = angular.module('myApp', [
     'myApp.View.Home',
     'myApp.view2',
     'myApp.version',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'angular-credit-cards',
+    'credit-cards',
 ]).config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
     $locationProvider.hashPrefix('!');
 
@@ -144,6 +146,11 @@ var app = angular.module('myApp', [
             }
             return result;
         };
+    })
+    .filter('yesNo', function () {
+        return function (boolean) {
+            return boolean ? 'Yes' : 'No';
+        }
     })
     .factory('UserDetails', function ($rootScope, $log) {
         var factory = {};
