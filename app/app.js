@@ -7,8 +7,7 @@ var app = angular.module('myApp', [
     'myApp.view2',
     'myApp.version',
     'ui.bootstrap',
-    'angular-credit-cards',
-    'credit-cards',
+    'ngCookies',
 ]).config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
     $locationProvider.hashPrefix('!');
 
@@ -216,16 +215,24 @@ var app = angular.module('myApp', [
 
         return factory;
     })
-    .controller('homeController', function ($scope, $http, $log, UserDetails) {
+    .controller('homeController', function ($scope, $http, $log, UserDetails,$cookies) {
+        UserDetails.setUserStatus($cookies.get('UserStatus') === 'true');
+        // $log.info(UserDetails.getUserStatus());
+        if(UserDetails.getUserStatus() === true)
+        {
+            UserDetails.setUserName($cookies.get('UserName'));
+            UserDetails.setUserId($cookies.get('UserID'));
+        }
+        $scope.LoggedIn = UserDetails.getUserStatus();
         $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
             // $log.info(response);
-            $scope.LoggedIn = UserDetails.getUserStatus();
+
             $scope.moviesHot = [];
             $scope.moviesHot = response;
             $scope.moviesNew = [];
         });
         $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
-            $log.info(response);
+            // $log.info(response);
             $scope.moviesNew = response;
         });
     })
@@ -235,9 +242,10 @@ var app = angular.module('myApp', [
         $scope.searchByMovieName = "";
         $scope.movisByCategory = {};
         $scope.amount = '1';
+        $scope.showQuantity = 5;
         angular.forEach($scope.categories, function (catagory) {
             // Here, the lang object will represent the lang you called the request on for the scope of the function
-            $http.get("http://localhost:8888/movies/getNextMovies?limit=5&category=" + catagory + "&rownum=1").success(function (response) {
+            $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + catagory).success(function (response) {
                 $scope.movisByCategory[catagory] = [];
                 $scope.movisByCategory[catagory] = response;
                 // ShoppingDetails.movies = response;
@@ -285,7 +293,7 @@ var app = angular.module('myApp', [
         }
 
         })
-    .controller('LoginController', function ($scope, $http, $log, UserDetails) {
+    .controller('LoginController', function ($scope, $http, $log, UserDetails,$cookies) {
         $scope.Login = function () {
             var login = {
                 username: $scope.username,
@@ -297,6 +305,10 @@ var app = angular.module('myApp', [
                 UserDetails.setUserStatus(true);
                 UserDetails.setUserId(data[0].client_id);
                 UserDetails.setUserName(data[0].username);
+                $cookies.put('UserName',data[0].username);
+                $cookies.put('UserID',data[0].client_id);
+                $cookies.put('UserStatus',true);
+                // $log.info(UserDetails.getUserStatus());
                 // UserDetails.setUserStatus(true);
                 // $log.info(UserDetails.getUserStatus())
                 // NavController.updateUserName();
@@ -428,8 +440,23 @@ var app = angular.module('myApp', [
         }
 
     })
-    .controller('OrderListrController',function($scope,$log,$http,$location,UserDetails){
-        $scope.OrdersList=[];
+    .controller('OrderListrController',function($scope,$log,$http,$location,UserDetails, $uibModal){
+        $scope.OrdersList=[
+            {
+                "client_id": "3        ",
+                "order_id": 3,
+                "date_of_purchase": "2017-06-06T00:00:00.000Z",
+                "date_of_shipment": "2000-01-01T00:00:00.000Z",
+                "total_cost_dollar": null
+            },
+            {
+                "client_id": "7        ",
+                "order_id": 7,
+                "date_of_purchase": "2017-06-06T00:00:00.000Z",
+                "date_of_shipment": "2003-01-01T00:00:00.000Z",
+                "total_cost_dollar": null
+            }
+        ];
         $http.get("http://localhost:8888/orders/previousOrders?client_id="+UserDetails.user_id).success(function (response) {
             $scope.OrdersList = response;
 
@@ -438,20 +465,44 @@ var app = angular.module('myApp', [
             $location.path('/ShoppingCart');
 
         }
+        $scope.viewOrderInvoice = function (order) {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'Templates/Main/OrderInvoiceModal.html',
+                controller: 'OrderInvoiceModalController',
+                size: 'lg',
+                resolve: {
+                    order: function () {
+                        return order;
+                    }
+                }
+            });
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
     })
     .controller('NavController', function ($scope, UserDetails, $location) {
         $scope.userName = UserDetails.getUserName();
+        $scope.loggedInButton = ""
         $scope.$on('updateUser', function () {
             $scope.userName = UserDetails.getUserName();
             // $scope.isLoggedIn = UserDetails.getUserStatus();
             $location.path('/');
 
         });
-
-
-
         // $scope.setUserName($scope.UserName);
         // $log.info($scope.UserName);
 
 
+    })
+    .controller('OrderInvoiceModalController', function ($scope, $uibModalInstance, order, $log) {
+        $scope.order = order;
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.selected.item);
+        };
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
     });
