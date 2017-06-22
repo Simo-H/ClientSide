@@ -41,7 +41,7 @@ var app = angular.module('myApp', [
         .when('/OrdersList',
             {
                 templateUrl: 'View.OrdersList/View.OrderList.html',
-                controller: 'OrderListrController'
+                controller: 'OrderListController'
             })
 
         .otherwise({redirectTo: 'index.html'});
@@ -146,7 +146,7 @@ var app = angular.module('myApp', [
             return boolean ? 'Yes' : 'No';
         }
     })
-    .factory('UserDetails', function ($rootScope, $log) {
+    .factory('UserDetails', function ($rootScope, $log,$cookies,ShoppingDetails) {
         var factory = {};
         factory.isLoggedIn = false;
         factory.userName = "Guest";
@@ -180,6 +180,24 @@ var app = angular.module('myApp', [
             $rootScope.$broadcast('updateUser');
 
         }
+        factory.loadUserData = function () {
+            var lastUserLoggedIn = $cookies.get('!LastUser');
+            var firstLogin = undefined != lastUserLoggedIn;
+            if(firstLogin)
+            {
+                var User = JSON.parse($cookies.get(lastUserLoggedIn));
+            }
+            factory.setUserStatus(firstLogin && User.UserStatus === 'true');
+            if (factory.getUserStatus() === true)
+            {
+                factory.setUserName(User.userName);
+                factory.setUserId(User.UserID);
+                if(undefined != User.Cart)
+                {
+                    ShoppingDetails.movies = User.Cart;
+                }
+            }
+        }
         return factory;
     })
     .factory('MoviesUtilities', function ($log) {
@@ -197,8 +215,9 @@ var app = angular.module('myApp', [
         }
         return factory;
     })
-    .factory('ShoppingDetails', function ($rootScope, $log, UserDetails,$cookies) {
+    .factory('ShoppingDetails', function ($rootScope, $log,$cookies) {
         var factory = {};
+
         factory.movies = [];
         factory.getMovies = function () {
             $log.info(factory.movies);
@@ -206,33 +225,32 @@ var app = angular.module('myApp', [
             return factory.movies;
 
         }
-        factory.addMovie = function (movie) {
+        factory.addMovie = function (movie,userName) {
             if (undefined == factory.movies) {
                 factory.movies = [];
             }
             factory.movies.push(movie);
             $log.info("tam tam tam");
             $rootScope.$broadcast('updateShopping');
-            factory.updateCookies();
+            factory.updateCookies(userName);
         }
-        factory.removeMovie = function (movie) {
+        factory.removeMovie = function (movie,userName) {
             var index = factory.movies.indexOf(movie);
             factory.movies.splice(index, 1);
             $rootScope.$broadcast('updateShopping');
-            factory.updateCookies();
+            factory.updateCookies(userName);
 
         }
-        factory.updateMovieAmount = function (index,movie) {
+        factory.updateMovieAmount = function (index,movie,userName) {
             $log.info("index: "+ index + " movie amount: "+movie.amount);
             factory.movies[index].amount = movie.amount;
-            factory.updateCookies();
+            factory.updateCookies(userName);
         }
-        factory.updateCookies = function () {
-            var userCookie = $cookies.get(UserDetails.userName);
+        factory.updateCookies = function (userName) {
+            var userCookie = $cookies.get(userName);
             var User = JSON.parse(userCookie);
             User.Cart = factory.movies;
-            $cookies.put(UserDetails.userName, JSON.stringify(User));
-            $log.info($cookies.get(UserDetails.userName));
+            $cookies.put(userName, JSON.stringify(User));
         }
         return factory;
     })
@@ -301,7 +319,7 @@ var app = angular.module('myApp', [
             if (amount > 0) {
                 $scope.addAmountToMovie(movie, amount);
                 // $log.info(movie);
-                ShoppingDetails.addMovie(movie);
+                ShoppingDetails.addMovie(movie,UserDetails.getUserName());
             }
 
         }
@@ -331,6 +349,7 @@ var app = angular.module('myApp', [
                 UserDetails.setUserStatus(true);
                 UserDetails.setUserId(data[0].client_id);
                 UserDetails.setUserName(data[0].username);
+                UserDetails.loadUserData();
                 $location.path('/');
             });
             res.error(function (data, status, headers, config) {
@@ -431,13 +450,13 @@ var app = angular.module('myApp', [
             // $log.info("1");
 
             $scope.totalPrice = 0;
-            ShoppingDetails.updateMovieAmount(index,movie);
+            ShoppingDetails.updateMovieAmount(index,movie,UserDetails.getUserName());
             angular.forEach($scope.movies, function (movie) {
                 $scope.totalPrice = movie.amount * movie.price_dollars + $scope.totalPrice;
             })
         }
         $scope.deleteMovieShopingCart = function (movie) {
-            ShoppingDetails.removeMovie(movie);
+            ShoppingDetails.removeMovie(movie,UserDetails.getUserName());
         };
         $scope.getorderlist = function () {
             $location.path('/OrdersList');
@@ -451,7 +470,7 @@ var app = angular.module('myApp', [
         }
 
     })
-    .controller('OrderListrController', function ($scope, $log, $http, $location, UserDetails) {
+    .controller('OrderListController', function ($scope, $log, $http, $location, UserDetails) {
         $scope.OrdersList = [];
         $http.get("http://localhost:8888/orders/previousOrders?client_id=" + UserDetails.user_id).success(function (response) {
             $scope.OrdersList = response;
@@ -522,23 +541,9 @@ var app = angular.module('myApp', [
 
     })
     .controller('NavController', function ($scope, UserDetails, $location, $log, $cookies, ShoppingDetails) {
-        var lastUserLoggedIn = $cookies.get('!LastUser');
-        $log.info("Last logged in user was " + lastUserLoggedIn);
-        var User = JSON.parse($cookies.get(lastUserLoggedIn));
-        UserDetails.setUserStatus(undefined != lastUserLoggedIn && User.UserStatus === 'true');
-        $log.info("Last logged in user status is " + (undefined != lastUserLoggedIn && User.UserStatus === 'true'));
+        UserDetails.loadUserData();
         $scope.userName = UserDetails.getUserName();
         $scope.isLoggedIn = UserDetails.getUserStatus();
-        if (UserDetails.getUserStatus() === true) {
-            $log.info(User.Cart);
-            UserDetails.setUserName(User.userName);
-            UserDetails.setUserId(User.UserID);
-            ShoppingDetails.movies = User.Cart;
-        }
-        $scope.showLogin = true;
-        $scope.userName = UserDetails.getUserName();
-        // $scope.loggedInButton = "Login"
-
         $scope.$on('updateUser', function () {
             $scope.userName = UserDetails.getUserName();
             $scope.isLoggedIn = UserDetails.getUserStatus();
@@ -549,7 +554,7 @@ var app = angular.module('myApp', [
             $cookies.put('!LastUser', $scope.userName)
             var logoutUser = JSON.parse($cookies.get($scope.userName));
             logoutUser.UserStatus = "false";
-            // $log.info(logoutUser);
+            // $log.info($cookies.get($scope.userName));
             $cookies.put($scope.userName, JSON.stringify(logoutUser));
             UserDetails.setUserName("Guest");
             UserDetails.setUserStatus(false);
