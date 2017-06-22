@@ -415,25 +415,12 @@ var app = angular.module('myApp', [
            $scope.totalPrice=0;
 
             angular.forEach($scope.movies, function (movie) {
-                $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
-            })
+               $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
+           })
         }
         $scope.deleteMovieShopingCart = function (movie) {
             ShoppingDetails.removeMovie(movie);
         };
-        $scope.Madeorder=function(movies){
-            var res = $http.post('http://localhost:8888/orders//previousOrders', movies, {headers: {'Content-Type': 'application/json'}});
-            res.success(function (data, status, headers, config) {
-                $log.info(data[0].username);
-
-                // UserDetails.setUserStatus(true);
-                // $log.info(UserDetails.getUserStatus())
-                // NavController.updateUserName();
-                // $log.info(UserDetails.getUserName());
-            });
-
-
-        }
         $scope.getorderlist=function(){
             $location.path('/OrdersList');
 
@@ -446,23 +433,8 @@ var app = angular.module('myApp', [
         }
 
     })
-    .controller('OrderListrController',function($scope,$log,$http,$location,UserDetails, $uibModal){
-        $scope.OrdersList=[
-            {
-                "client_id": "3        ",
-                "order_id": 3,
-                "date_of_purchase": "2017-06-06T00:00:00.000Z",
-                "date_of_shipment": "2000-01-01T00:00:00.000Z",
-                "total_cost_dollar": null
-            },
-            {
-                "client_id": "7        ",
-                "order_id": 7,
-                "date_of_purchase": "2017-06-06T00:00:00.000Z",
-                "date_of_shipment": "2003-01-01T00:00:00.000Z",
-                "total_cost_dollar": null
-            }
-        ];
+    .controller('OrderListrController',function($scope,$log,$http,$location,UserDetails){
+        $scope.OrdersList=[];
         $http.get("http://localhost:8888/orders/previousOrders?client_id="+UserDetails.user_id).success(function (response) {
             $scope.OrdersList = response;
 
@@ -489,14 +461,47 @@ var app = angular.module('myApp', [
             });
         };
     })
-    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log, $http,ShoppingDetails,UserDetails) {
-        $scope.dt = new Date();
-        var today = new Date();
-        today = today.setDate(today.getDate()+7)
-        $scope.options = {
-            minDate: today
+    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log,$location, $http,ShoppingDetails,UserDetails) {
+        $scope.pay="dollar";
+        $scope.payment;
+        $scope.totalPrice=0
+        $scope.movies=ShoppingDetails.movies;
+        angular.forEach($scope.movies, function (movie) {
+            $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
+        })
+        $scope.payment=$scope.totalPrice;
+        $scope.currentDate = new Date();
+        $scope.currentDate = $scope.currentDate.setDate($scope.currentDate.getDate() + 7);
+        $scope.pay;
+        $scope.change=function(){
+            $log.info('Modal dismissed at: ' );
+
+            if($scope.pay=="dollar"){
+                $scope.payment=$scope.totalPrice;
+
+            }
+            else{
+                $scope.payment=parseInt($scope.totalPrice)/3.8;
+
+            }
         }
-        // $scope.week = new Date() + 7;
+        // $scope.cancel=function(){
+        //     // $location.path('/ShoppingCart');
+        //     this.$hide();
+        // }
+        $scope.submit=function(){
+            var res = $http.post('http://localhost:8888/orders/addOrder', $scope.movies, {headers: {'Content-Type': 'application/json'}});
+            $log.info("cheack");
+
+            res.success(function (data, status, headers, config) {
+                alert("done: " + JSON.stringify({data: data}));
+
+            });
+            res.error(function (data, status, headers, config) {
+                alert("failure message: " + JSON.stringify({data: data}));
+            });
+        }
+
     })
     .controller('NavController', function ($scope, UserDetails, $location,$log,$cookies) {
         UserDetails.setUserStatus($cookies.get('UserStatus') === 'true');
