@@ -151,7 +151,7 @@ var app = angular.module('myApp', [
             return boolean ? 'Yes' : 'No';
         }
     })
-    .factory('UserDetails', function ($rootScope, $log,$cookies) {
+    .factory('UserDetails', function ($rootScope, $log) {
         var factory = {};
         factory.isLoggedIn = false;
         factory.userName = "Guest";
@@ -222,7 +222,7 @@ var app = angular.module('myApp', [
 
         return factory;
     })
-    .controller('homeController', function ($scope, $http, $log, UserDetails,$cookies) {
+    .controller('homeController', function ($scope, $http, $log, UserDetails) {
 
         $scope.isLoggedIn = UserDetails.getUserStatus();
         $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
@@ -306,9 +306,9 @@ var app = angular.module('myApp', [
             }
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-                $cookies.put('UserName',data[0].username);
-                $cookies.put('UserID',data[0].client_id);
-                $cookies.put('UserStatus','true');
+                var userSession = {"userName": data[0].username, "UserID": data[0].client_id,"UserStatus":"true" }
+                $cookies.put(data[0].username,JSON.stringify(userSession));
+                $log.info($cookies.get(data[0].username));
                 UserDetails.setUserStatus(true);
                 UserDetails.setUserId(data[0].client_id);
                 UserDetails.setUserName(data[0].username);
@@ -491,7 +491,7 @@ var app = angular.module('myApp', [
         // }
         $scope.submit=function(){
             var res = $http.post('http://localhost:8888/orders/addOrder', $scope.movies, {headers: {'Content-Type': 'application/json'}});
-            $log.info("cheack");
+            $log.info("check");
 
             res.success(function (data, status, headers, config) {
                 alert("done: " + JSON.stringify({data: data}));
