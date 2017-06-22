@@ -69,7 +69,7 @@
 
 
         <!-- Title -->
-        <div ng-show="isLoggedIn == true">
+        <div ng-show="isLoggedIn">
             <div  class="row">
                 <div class="col-lg-12">
                     <h3>New Movies</h3>
@@ -78,7 +78,7 @@
             <!-- /.row -->
 
             <!-- Page Features -->
-            <div  class="row text-center">
+            <div ng-show="isLoggedIn"  class="row text-center">
 
                 <div ng-repeat="movie in moviesNew" class="col-md-3 col-sm-6 hero-feature">
                     <div class="thumbnail">

@@ -34,7 +34,7 @@
                 <form name="outerForm">
                     <div class="panel-body">
 
-                        <div class="row" ng-repeat="movie in movies">
+                        <div class="row" ng-repeat="movie in movies track by $index">
                             <div class="col-xs-2"><img class="img-responsive" src="http://placehold.it/100x70">
                             </div>
                             <div class="col-xs-4">
@@ -50,7 +50,7 @@
                                 <div class="col-xs-4">
                                     <ng-form name="innerForm">
                                         <!--<input type="number" name= "amount" ng-model="movie.amount" min="0" max="100"  class="form-control input-sm"   >-->
-                                        <number-spin ng-model="movie.amount" ng-change="change()" required></number-spin>
+                                        <number-spin ng-model="movie.amount" ng-change="change($index,movie)" required></number-spin>
                                     </ng-form>
                                 </div>
                                 <div class="col-xs-2">

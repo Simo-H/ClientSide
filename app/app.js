@@ -36,25 +36,25 @@ var app = angular.module('myApp', [
         .when('/ShoppingCart',
             {
                 templateUrl: 'View.ShoppingCart/View.ShoppingCart.html',
-                controller: 'ShopingCartController'
+                controller: 'ShoppingCartController'
             })
         .when('/OrdersList',
             {
-                templateUrl:'View.OrdersList/View.OrderList.html',
+                templateUrl: 'View.OrdersList/View.OrderList.html',
                 controller: 'OrderListrController'
             })
 
         .otherwise({redirectTo: 'index.html'});
 }])
-    .directive('numericOnly', function(){
+    .directive('numericOnly', function () {
         return {
             require: 'ngModel',
-            link: function(scope, element, attrs, modelCtrl) {
+            link: function (scope, element, attrs, modelCtrl) {
 
                 modelCtrl.$parsers.push(function (inputValue) {
-                    var transformedInput = inputValue ? inputValue.replace(/[^\d]/g,'') : null;
+                    var transformedInput = inputValue ? inputValue.replace(/[^\d]/g, '') : null;
 
-                    if (transformedInput!=inputValue) {
+                    if (transformedInput != inputValue) {
                         modelCtrl.$setViewValue(transformedInput);
                         modelCtrl.$render();
                     }
@@ -64,7 +64,7 @@ var app = angular.module('myApp', [
             }
         };
     })
-    .directive('numberSpin', [function(){
+    .directive('numberSpin', [function () {
 
         return {
             restrict: 'E',
@@ -72,75 +72,70 @@ var app = angular.module('myApp', [
             scope: {
                 "ngModel": '='
             },
-            template: '<div class="input-group pull-right" style="width: 50px;height: 10px;padding: 0; margin: 0;bottom: 0">'+
-                        '<span class="input-group-btn">'+
-                            '<button data-ng-click="minus()" style="width: 10px;padding: 0;height: 20px " type="button" class="btn btn-danger btn-number" data-type="minus" data-field="quant[2]">'+
-                             '<span style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"; class="glyphicon glyphicon-minus"; ></span>'+
-                            '</button>'+
-                        '</span>'+
-                        '<input numeric-only data-ng-model="ngModel"  ng-pattern="onlyNumbers" ng-change="updateModel()" type="text" name="quant[2]" style="padding: 0;margin: 0;font-size: 15px;text-align: center;height: 20px" class="form-control input-number" value=1 min="1" max="100">'+
-                        '<span class="input-group-btn">'+
-                            '<button data-ng-click="plus()" type="button" class="btn btn-success btn-number"  style="width: 10px;padding-bottom: 10px;padding:0px;top: 0;margin-top:0;height: 20px " data-type="plus" data-field="quant[2]">'+
-                                '<span class="glyphicon glyphicon-plus" style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"></span>'+
-                            '</button>'+
-                        '</span>'+
-                    '</div>',
-            link: function(scope, elem, attrs,ctrl){
+            template: '<div class="input-group pull-right" style="width: 50px;height: 10px;padding: 0; margin: 0;bottom: 0">' +
+            '<span class="input-group-btn">' +
+            '<button data-ng-click="minus()" style="width: 10px;padding: 0;height: 20px " type="button" class="btn btn-danger btn-number" data-type="minus" data-field="quant[2]">' +
+            '<span style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"; class="glyphicon glyphicon-minus"; ></span>' +
+            '</button>' +
+            '</span>' +
+            '<input numeric-only data-ng-model="ngModel"  ng-pattern="onlyNumbers" ng-change="updateModel()" type="text" name="quant[2]" style="padding: 0;margin: 0;font-size: 15px;text-align: center;height: 20px" class="form-control input-number" value=1 min="1" max="100">' +
+            '<span class="input-group-btn">' +
+            '<button data-ng-click="plus()" type="button" class="btn btn-success btn-number"  style="width: 10px;padding-bottom: 10px;padding:0px;top: 0;margin-top:0;height: 20px " data-type="plus" data-field="quant[2]">' +
+            '<span class="glyphicon glyphicon-plus" style="font-size: 6px;text-align: center; padding: 0;margin: 0;top: -3px;"></span>' +
+            '</button>' +
+            '</span>' +
+            '</div>',
+            link: function (scope, elem, attrs, ctrl) {
 
                 scope.onlyNumbers = /^\d+$/;
-                scope.plus = function(){
-                    if(scope.ngModel<999){
-                        scope.ngModel = scope.ngModel*1 + 1;
+                scope.plus = function () {
+                    if (scope.ngModel < 999) {
+                        scope.ngModel = scope.ngModel * 1 + 1;
                         scope.updateModel(scope.ngModel);
                     }
                 }
-                scope.minus = function(){
-                    if(scope.ngModel>0){
+                scope.minus = function () {
+                    if (scope.ngModel > 0) {
                         scope.ngModel = scope.ngModel - 1;
                         scope.updateModel();
                     }
                 }
-                scope.updateModel = function()
-                {
+                scope.updateModel = function () {
                     ctrl.$setViewValue(scope.ngModel);
                 }
             }
         }
 
     }])
-    .filter('filterCategories', function($log) {
-        return function(items,text) {
+    .filter('filterCategories', function ($log) {
+        return function (items, text) {
             var result = {};
             // $log.info(text);
-            if(text != "")
-            {
-                angular.forEach(items, function(value, key) {
+            if (text != "") {
+                angular.forEach(items, function (value, key) {
                     if (key.includes(text)) {
                         result[key] = value;
                     }
                 });
             }
-            else
-            {
+            else {
                 result = items;
             }
             return result;
         };
     })
-    .filter('filterMovies', function($log) {
-        return function(items,text,category) {
+    .filter('filterMovies', function ($log) {
+        return function (items, text, category) {
             var result = {};
             // $log.info(text);
-            if(text != "")
-            {
-                angular.forEach(items, function(value, key) {
+            if (text != "") {
+                angular.forEach(items, function (value, key) {
                     if (key.includes(text)) {
                         result[key] = value;
                     }
                 });
             }
-            else
-            {
+            else {
                 result = items;
             }
             return result;
@@ -156,7 +151,7 @@ var app = angular.module('myApp', [
         factory.isLoggedIn = false;
         factory.userName = "Guest";
         factory.user_id;
-        factory.dollar=true;
+        factory.dollar = true;
 
         factory.getUserStatus = function () {
             return factory.isLoggedIn;
@@ -189,16 +184,20 @@ var app = angular.module('myApp', [
     })
     .factory('MoviesUtilities', function ($log) {
         var factory = {};
-        factory.getNumber = function(num) {
-            var arr=[];
-            var i=0;
-            while(i<num){arr.push(i);i++;};
+        factory.getNumber = function (num) {
+            var arr = [];
+            var i = 0;
+            while (i < num) {
+                arr.push(i);
+                i++;
+            }
+            ;
             // $log.info(arr);
             return arr;
         }
         return factory;
     })
-    .factory('ShoppingDetails', function ($rootScope, $log) {
+    .factory('ShoppingDetails', function ($rootScope, $log, UserDetails,$cookies) {
         var factory = {};
         factory.movies = [];
         factory.getMovies = function () {
@@ -208,32 +207,43 @@ var app = angular.module('myApp', [
 
         }
         factory.addMovie = function (movie) {
+            if (undefined == factory.movies) {
+                factory.movies = [];
+            }
             factory.movies.push(movie);
-            $log.info(factory.movies);
-            $rootScope.$broadcast('updateShoping');
-
+            $log.info("tam tam tam");
+            $rootScope.$broadcast('updateShopping');
+            factory.updateCookies();
         }
         factory.removeMovie = function (movie) {
             var index = factory.movies.indexOf(movie);
             factory.movies.splice(index, 1);
-            $rootScope.$broadcast('updateShoping');
+            $rootScope.$broadcast('updateShopping');
+            factory.updateCookies();
 
         }
-
+        factory.updateMovieAmount = function (index,movie) {
+            $log.info("index: "+ index + " movie amount: "+movie.amount);
+            factory.movies[index].amount = movie.amount;
+            factory.updateCookies();
+        }
+        factory.updateCookies = function () {
+            var userCookie = $cookies.get(UserDetails.userName);
+            var User = JSON.parse(userCookie);
+            User.Cart = factory.movies;
+            $cookies.put(UserDetails.userName, JSON.stringify(User));
+            $log.info($cookies.get(UserDetails.userName));
+        }
         return factory;
     })
     .controller('homeController', function ($scope, $http, $log, UserDetails) {
-
+        $scope.moviesHot = [];
+        $scope.moviesNew = [];
         $scope.isLoggedIn = UserDetails.getUserStatus();
         $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
-            // $log.info(response);
-
-            $scope.moviesHot = [];
             $scope.moviesHot = response;
-            $scope.moviesNew = [];
         });
         $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
-            // $log.info(response);
             $scope.moviesNew = response;
         });
         $scope.$on('updateUser', function () {
@@ -241,7 +251,7 @@ var app = angular.module('myApp', [
             // $log.info($scope.isLoggedIn);
         });
     })
-    .controller('moviesController', function ($scope, $http, $log, $uibModal,ShoppingDetails,MoviesUtilities) {
+    .controller('moviesController', function ($scope, $http, $log, $uibModal, ShoppingDetails, MoviesUtilities,$cookies,UserDetails) {
         $scope.categories = new Array('action', 'animation', 'sci-fi', 'comics');
         $scope.searchByCategory = "";
         $scope.searchByMovieName = "";
@@ -280,25 +290,24 @@ var app = angular.module('myApp', [
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
-        $scope.getNumber = function(num) {
+        $scope.getNumber = function (num) {
             return MoviesUtilities.getNumber(num);
         };
-        $scope.addAmountToMovie = function (movie,amount) {
+        $scope.addAmountToMovie = function (movie, amount) {
             movie['amount'] = amount;
             // $log.info(movie);
         }
-        $scope.addMovieToCart = function (movie,amount) {
-            if(amount > 0)
-            {
-                $scope.addAmountToMovie(movie,amount);
+        $scope.addMovieToCart = function (movie, amount) {
+            if (amount > 0) {
+                $scope.addAmountToMovie(movie, amount);
                 // $log.info(movie);
                 ShoppingDetails.addMovie(movie);
             }
 
         }
 
-        })
-    .controller('LoginController', function ($scope, $http, $log, UserDetails,$cookies,$location) {
+    })
+    .controller('LoginController', function ($scope, $http, $log, UserDetails, $cookies, $location) {
         $scope.Login = function () {
             var login = {
                 username: $scope.username,
@@ -306,9 +315,19 @@ var app = angular.module('myApp', [
             }
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-                var userSession = {"userName": data[0].username, "UserID": data[0].client_id,"UserStatus":"true" }
-                $cookies.put(data[0].username,JSON.stringify(userSession));
-                $log.info($cookies.get(data[0].username));
+                var userSession = {"userName": data[0].username, "UserID": data[0].client_id, "UserStatus": "true"}
+
+                if (undefined == $cookies.get(data[0].username)) {
+                    $cookies.put(data[0].username, JSON.stringify(userSession));
+                }
+                else {
+                    var logoutUser = JSON.parse($cookies.get(data[0].username));
+                    logoutUser.UserStatus = "true";
+                    // $log.info(logoutUser);
+                    $cookies.put(data[0].username, JSON.stringify(logoutUser));
+                }
+                $cookies.put('!LastUser', data[0].username);
+                // $log.info($cookies.get(data[0].username));
                 UserDetails.setUserStatus(true);
                 UserDetails.setUserId(data[0].client_id);
                 UserDetails.setUserName(data[0].username);
@@ -359,7 +378,7 @@ var app = angular.module('myApp', [
             $scope.headoffice = '';
         }
     })
-    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http,MoviesUtilities,ShoppingDetails) {
+    .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http, MoviesUtilities, ShoppingDetails) {
         $scope.amount = '1';
         $scope.movie = movie;
         $http.get("http://localhost:8888/movies/movieDescription?movie_id=" + movie.movie_id).success(function (response) {
@@ -373,59 +392,58 @@ var app = angular.module('myApp', [
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
-        $scope.getNumber = function(num) {
+        $scope.getNumber = function (num) {
             return MoviesUtilities.getNumber(num);
         }
-        $scope.addAmountToMovie = function (movie,amount) {
+        $scope.addAmountToMovie = function (movie, amount) {
             movie['amount'] = amount;
             // $log.info(movie);
         }
-        $scope.addMovieToCart = function (movie,amount) {
-            if(amount > 0)
-            {
-                $scope.addAmountToMovie(movie,amount);
+        $scope.addMovieToCart = function (movie, amount) {
+            if (amount > 0) {
+                $scope.addAmountToMovie(movie, amount);
                 // $log.info(movie);
                 ShoppingDetails.addMovie(movie);
             }
         }
     })
-    .controller('ShopingCartController', function ($scope,$log,$http,$location,$uibModal,ShoppingDetails){
-        $scope.totalPrice=0;
-        $scope.movies=ShoppingDetails.movies;
+    .controller('ShoppingCartController', function ($scope, $log, $http, $location, $uibModal, ShoppingDetails, UserDetails, $cookies) {
+        $scope.totalPrice = 0;
+
+        $scope.movies = ShoppingDetails.movies;
         angular.forEach($scope.movies, function (movie) {
-            $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
+            $scope.totalPrice = movie.amount * movie.price_dollars + $scope.totalPrice;
             // $log.info(movie);
         })
 
-        $scope.clickContinueShoping=function () {
-           $location.path('/Movies');
-       }
+        $scope.clickContinueShoping = function () {
+            $location.path('/Movies');
+        }
 
-       $scope.$on('updateShoping', function () {
-            $scope.totalPrice=0;
-            $scope.movies= ShoppingDetails.getMovies();
-           angular.forEach($scope.movies, function (movie) {
-               $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
-            })
-
-        });
-       $scope.change=function(){
-           $log.info("1");
-
-           $scope.totalPrice=0;
-
+        $scope.$on('updateShopping', function () {
+            $scope.totalPrice = 0;
+            $scope.movies = ShoppingDetails.getMovies();
             angular.forEach($scope.movies, function (movie) {
-               $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
-           })
+                $scope.totalPrice = movie.amount * movie.price_dollars + $scope.totalPrice;
+            })
+        });
+        $scope.change = function (index,movie) {
+            // $log.info("1");
+
+            $scope.totalPrice = 0;
+            ShoppingDetails.updateMovieAmount(index,movie);
+            angular.forEach($scope.movies, function (movie) {
+                $scope.totalPrice = movie.amount * movie.price_dollars + $scope.totalPrice;
+            })
         }
         $scope.deleteMovieShopingCart = function (movie) {
             ShoppingDetails.removeMovie(movie);
         };
-        $scope.getorderlist=function(){
+        $scope.getorderlist = function () {
             $location.path('/OrdersList');
 
         }
-        $scope.gotoCheckout=function(){
+        $scope.gotoCheckout = function () {
             var modalInstance = $uibModal.open({
                 templateUrl: 'Templates/Main/CheckoutModal.html',
                 controller: 'CheckoutModalController',
@@ -433,13 +451,13 @@ var app = angular.module('myApp', [
         }
 
     })
-    .controller('OrderListrController',function($scope,$log,$http,$location,UserDetails){
-        $scope.OrdersList=[];
-        $http.get("http://localhost:8888/orders/previousOrders?client_id="+UserDetails.user_id).success(function (response) {
+    .controller('OrderListrController', function ($scope, $log, $http, $location, UserDetails) {
+        $scope.OrdersList = [];
+        $http.get("http://localhost:8888/orders/previousOrders?client_id=" + UserDetails.user_id).success(function (response) {
             $scope.OrdersList = response;
 
         });
-        $scope.goback=function(){
+        $scope.goback = function () {
             $location.path('/ShoppingCart');
 
         }
@@ -461,27 +479,27 @@ var app = angular.module('myApp', [
             });
         };
     })
-    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log,$location, $http,ShoppingDetails,UserDetails) {
-        $scope.pay="dollar";
+    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log, $location, $http, ShoppingDetails, UserDetails) {
+        $scope.pay = "dollar";
         $scope.payment;
-        $scope.totalPrice=0
-        $scope.movies=ShoppingDetails.movies;
+        $scope.totalPrice = 0
+        $scope.movies = ShoppingDetails.movies;
         angular.forEach($scope.movies, function (movie) {
-            $scope.totalPrice=movie.amount * movie.price_dollars +$scope.totalPrice;
+            $scope.totalPrice = movie.amount * movie.price_dollars + $scope.totalPrice;
         })
-        $scope.payment=$scope.totalPrice;
+        $scope.payment = $scope.totalPrice;
         $scope.currentDate = new Date();
         $scope.currentDate = $scope.currentDate.setDate($scope.currentDate.getDate() + 7);
         $scope.pay;
-        $scope.change=function(){
-            $log.info('Modal dismissed at: ' );
+        $scope.change = function () {
+            $log.info('Modal dismissed at: ');
 
-            if($scope.pay=="dollar"){
-                $scope.payment=$scope.totalPrice;
+            if ($scope.pay == "dollar") {
+                $scope.payment = $scope.totalPrice;
 
             }
-            else{
-                $scope.payment=parseInt($scope.totalPrice)/3.8;
+            else {
+                $scope.payment = parseInt($scope.totalPrice) / 3.8;
 
             }
         }
@@ -489,7 +507,7 @@ var app = angular.module('myApp', [
         //     // $location.path('/ShoppingCart');
         //     this.$hide();
         // }
-        $scope.submit=function(){
+        $scope.submit = function () {
             var res = $http.post('http://localhost:8888/orders/addOrder', $scope.movies, {headers: {'Content-Type': 'application/json'}});
             $log.info("check");
 
@@ -503,17 +521,19 @@ var app = angular.module('myApp', [
         }
 
     })
-    .controller('NavController', function ($scope, UserDetails, $location,$log,$cookies) {
-        UserDetails.setUserStatus($cookies.get('UserStatus') === 'true');
-        // $log.info(UserDetails.getUserStatus());
+    .controller('NavController', function ($scope, UserDetails, $location, $log, $cookies, ShoppingDetails) {
+        var lastUserLoggedIn = $cookies.get('!LastUser');
+        $log.info("Last logged in user was " + lastUserLoggedIn);
+        var User = JSON.parse($cookies.get(lastUserLoggedIn));
+        UserDetails.setUserStatus(undefined != lastUserLoggedIn && User.UserStatus === 'true');
+        $log.info("Last logged in user status is " + (undefined != lastUserLoggedIn && User.UserStatus === 'true'));
         $scope.userName = UserDetails.getUserName();
         $scope.isLoggedIn = UserDetails.getUserStatus();
-        // $log.info($scope.isLoggedIn);
-        if(UserDetails.getUserStatus() === true)
-        {
-            // $log.info($scope.isLoggedIn);
-            UserDetails.setUserName($cookies.get('UserName'));
-            UserDetails.setUserId($cookies.get('UserID'));
+        if (UserDetails.getUserStatus() === true) {
+            $log.info(User.Cart);
+            UserDetails.setUserName(User.userName);
+            UserDetails.setUserId(User.UserID);
+            ShoppingDetails.movies = User.Cart;
         }
         $scope.showLogin = true;
         $scope.userName = UserDetails.getUserName();
@@ -522,16 +542,18 @@ var app = angular.module('myApp', [
         $scope.$on('updateUser', function () {
             $scope.userName = UserDetails.getUserName();
             $scope.isLoggedIn = UserDetails.getUserStatus();
-            $log.info($scope.isLoggedIn);
+            // $log.info($scope.isLoggedIn);
             // $log.info($scope.isLoggedIn);
         });
         $scope.logout = function () {
+            $cookies.put('!LastUser', $scope.userName)
+            var logoutUser = JSON.parse($cookies.get($scope.userName));
+            logoutUser.UserStatus = "false";
+            // $log.info(logoutUser);
+            $cookies.put($scope.userName, JSON.stringify(logoutUser));
             UserDetails.setUserName("Guest");
             UserDetails.setUserStatus(false);
             UserDetails.setUserId("");
-            $cookies.remove('UserName');
-            $cookies.remove('UserID');
-            $cookies.remove('UserStatus');
             // $log.info(UserDetails.getUserStatus())
         }
         // $scope.setUserName($scope.UserName);
