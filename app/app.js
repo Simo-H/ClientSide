@@ -151,7 +151,7 @@ var app = angular.module('myApp', [
             return boolean ? 'Yes' : 'No';
         }
     })
-    .factory('UserDetails', function ($rootScope, $log) {
+    .factory('UserDetails', function ($rootScope, $log,$cookies) {
         var factory = {};
         factory.isLoggedIn = false;
         factory.userName = "Guest";
@@ -166,10 +166,14 @@ var app = angular.module('myApp', [
         }
         factory.setUserStatus = function (status) {
             factory.isLoggedIn = status;
+            // $log.info(status);
+            $rootScope.$broadcast('updateUser');
             // $log.info(factory.isLoggedIn);
         }
         factory.setUserId = function (userId) {
             factory.user_id = userId;
+
+            $rootScope.$broadcast('updateUser');
             // $log.info(factory.isLoggedIn);
         }
         factory.getUserName = function () {
@@ -177,6 +181,7 @@ var app = angular.module('myApp', [
         }
         factory.setUserName = function (name) {
             factory.userName = name;
+
             $rootScope.$broadcast('updateUser');
 
         }
@@ -218,14 +223,8 @@ var app = angular.module('myApp', [
         return factory;
     })
     .controller('homeController', function ($scope, $http, $log, UserDetails,$cookies) {
-        UserDetails.setUserStatus($cookies.get('UserStatus') === 'true');
-        // $log.info(UserDetails.getUserStatus());
-        if(UserDetails.getUserStatus() === true)
-        {
-            UserDetails.setUserName($cookies.get('UserName'));
-            UserDetails.setUserId($cookies.get('UserID'));
-        }
-        $scope.LoggedIn = UserDetails.getUserStatus();
+
+        $scope.isLoggedIn = UserDetails.getUserStatus();
         $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
             // $log.info(response);
 
@@ -236,6 +235,10 @@ var app = angular.module('myApp', [
         $http.get("http://localhost:8888/movies/newMovies").success(function (response) {
             // $log.info(response);
             $scope.moviesNew = response;
+        });
+        $scope.$on('updateUser', function () {
+            $scope.isLoggedIn = UserDetails.getUserStatus();
+            // $log.info($scope.isLoggedIn);
         });
     })
     .controller('moviesController', function ($scope, $http, $log, $uibModal,ShoppingDetails,MoviesUtilities) {
@@ -295,7 +298,7 @@ var app = angular.module('myApp', [
         }
 
         })
-    .controller('LoginController', function ($scope, $http, $log, UserDetails,$cookies) {
+    .controller('LoginController', function ($scope, $http, $log, UserDetails,$cookies,$location) {
         $scope.Login = function () {
             var login = {
                 username: $scope.username,
@@ -303,18 +306,13 @@ var app = angular.module('myApp', [
             }
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-                // $log.info(data[0].username);
+                $cookies.put('UserName',data[0].username);
+                $cookies.put('UserID',data[0].client_id);
+                $cookies.put('UserStatus','true');
                 UserDetails.setUserStatus(true);
                 UserDetails.setUserId(data[0].client_id);
                 UserDetails.setUserName(data[0].username);
-                $cookies.put('UserName',data[0].username);
-                $cookies.put('UserID',data[0].client_id);
-                $cookies.put('UserStatus',true);
-                // $log.info(UserDetails.getUserStatus());
-                // UserDetails.setUserStatus(true);
-                // $log.info(UserDetails.getUserStatus())
-                // NavController.updateUserName();
-                // $log.info(UserDetails.getUserName());
+                $location.path('/');
             });
             res.error(function (data, status, headers, config) {
                 alert("failure message: " + JSON.stringify({data: data}));
@@ -492,53 +490,45 @@ var app = angular.module('myApp', [
         };
     })
     .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log, $http,ShoppingDetails,UserDetails) {
-         // $scope.loadedAt =this.setDate(Date() + parseInt(7));
-        //  $scope.selectedDate = new Date();
-        // $scope.selectedDate=$scope.selectedDate.getDate();
-        // $scope.data = {
-        //     theDate: loadedAt,
-        // };
-        //
-        // $scope.currentDate = new Date();
-        //
-        // $scope.cancel=function(){
-        //     $location.path('/ShoppingCart');
-        //
-        // }
-        // $scope.submit=function(){
-        //     var Date=this.setDate(Date() + parseInt(7));
-        //     $log.info(data.theDate);
-        //
-        //     if(data.theDate< Date)
-        //     {
-        //         $log.info("gffgb");
-        //         alert("Date unvalid");
-        //     }
-        //     else
-        //     {
-        //         var res = $http.post('http://localhost:8888/orders/addOrder', ShoppingDetails.movies, {headers: {'Content-Type': 'application/json'}});
-        //         res.success(function (data, status, headers, config) {
-        //             $scope.message = data;
-        //             alert("good");
-        //
-        //             // $log.info(first_name);
-        //
-        //         });
-        //         res.error(function (data, status, headers, config) {
-        //             alert("failure message: " + JSON.stringify({data: data}));
-        //         });
-        //     }
-        // }
+        $scope.dt = new Date();
+        var today = new Date();
+        today = today.setDate(today.getDate()+7)
+        $scope.options = {
+            minDate: today
+        }
+        // $scope.week = new Date() + 7;
     })
-    .controller('NavController', function ($scope, UserDetails, $location) {
+    .controller('NavController', function ($scope, UserDetails, $location,$log,$cookies) {
+        UserDetails.setUserStatus($cookies.get('UserStatus') === 'true');
+        // $log.info(UserDetails.getUserStatus());
         $scope.userName = UserDetails.getUserName();
-        $scope.loggedInButton = ""
+        $scope.isLoggedIn = UserDetails.getUserStatus();
+        // $log.info($scope.isLoggedIn);
+        if(UserDetails.getUserStatus() === true)
+        {
+            // $log.info($scope.isLoggedIn);
+            UserDetails.setUserName($cookies.get('UserName'));
+            UserDetails.setUserId($cookies.get('UserID'));
+        }
+        $scope.showLogin = true;
+        $scope.userName = UserDetails.getUserName();
+        // $scope.loggedInButton = "Login"
+
         $scope.$on('updateUser', function () {
             $scope.userName = UserDetails.getUserName();
-            // $scope.isLoggedIn = UserDetails.getUserStatus();
-            $location.path('/');
-
+            $scope.isLoggedIn = UserDetails.getUserStatus();
+            $log.info($scope.isLoggedIn);
+            // $log.info($scope.isLoggedIn);
         });
+        $scope.logout = function () {
+            UserDetails.setUserName("Guest");
+            UserDetails.setUserStatus(false);
+            UserDetails.setUserId("");
+            $cookies.remove('UserName');
+            $cookies.remove('UserID');
+            $cookies.remove('UserStatus');
+            // $log.info(UserDetails.getUserStatus())
+        }
         // $scope.setUserName($scope.UserName);
         // $log.info($scope.UserName);
 

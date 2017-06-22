@@ -46,8 +46,9 @@
 
                         <p>chose data for shipment</p>
                         <div class="form-group">
-                            {{selectedDate}}
-                            <input ng-model="selectedDate" required  pattern="(?=.*\d)(?=.*[0-9]).{10,}"  placeholder="yyyy-MM-dd"  min="{{$scope.loadedAt | date:'yyyy-MM-dd'}}" id="theDate" name="theDate" type="date" class="form-control inputpass form-control input-lg" /> </p>
+                            {{dt | date:'fullDate' }}
+                            <div uib-datepicker ng-model="dt" class="well well-sm" datepicker-options="options"></div>
+                            <!--<input ng-model="selectedDate" required  pattern="(?=.*\d)(?=.*[0-9]).{10,}"  placeholder="yyyy-MM-dd"  min="{{$scope.loadedAt | date:'yyyy-MM-dd'}}" id="theDate" name="theDate" type="date" class="form-control inputpass form-control input-lg" /> </p>-->
                             <span ng-show="frm.orderdate.$dirty&&frm.orderdate.$error.required">required</span>
                             <span ng-show="frm.orderdate.$dirty&&frm.orderdate.$error.minlength">too short</span>
 
