@@ -566,24 +566,16 @@ var app = angular.module('myApp', [
             var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}})
                 .success(function (data, status, headers, config)
             {
-                $log.info(data);
-                // $log.info(res);
-
-               // order.order_id=data;
-
-                // var res2=$http.get("http://localhost:8888/orders/getOrder?order_id="+data ).success(function (response) {
-                //  res.success(function (res2, status, headers, config) {
-                //         $log.info(res2);
-                //         $log.info( $scope.order+"order");
-                        $scope.viewOrderInvoice(order);
-                        ShoppingDetails.setmovies();
-                        $location.path('/OrdersList');
-                 //    });
-                 // });
-
-
-                //alert("done: " + JSON.stringify({data: data}));
-
+                var isANumber = isNaN(data) === false;
+                if(isANumber) {
+                    order.order_id = data;
+                    $scope.viewOrderInvoice(order);
+                    ShoppingDetails.setmovies();
+                    $location.path('/OrdersList');
+                }
+                else{
+                    var missing= "dfgdgdf";
+                    bootbox.alert(missing)}
             });
             res.error(function (data, status, headers, config) {
                 alert("failure message: " + JSON.stringify({data: data}));
