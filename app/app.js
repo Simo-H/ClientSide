@@ -461,7 +461,7 @@ var app = angular.module('myApp', [
         //     this.$hide();
         // }
         $scope.submit=function(){
-            var res = $http.post('http://localhost:8888/orders.js/addOrder', $scope.movies, {headers: {'Content-Type': 'application/json'}});
+            var res = $http.post('http://localhost:8888/orders/addOrder', $scope.movies, {headers: {'Content-Type': 'application/json'}});
             $log.info("cheack");
 
             res.success(function (data, status, headers, config) {
