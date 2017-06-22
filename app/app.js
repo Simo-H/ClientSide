@@ -563,18 +563,18 @@ var app = angular.module('myApp', [
 
             $log.info(order)
 
-            var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}});
-            res.success(function (data, status, headers, config)
+            var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}})
+                .success(function (data, status, headers, config)
             {
-                $log.info(data+"data");
-                $log.info(res+"res");
+                $log.info(data);
+                // $log.info(res);
 
                // order.order_id=data;
 
                 // var res2=$http.get("http://localhost:8888/orders/getOrder?order_id="+data ).success(function (response) {
                 //  res.success(function (res2, status, headers, config) {
                 //         $log.info(res2);
-                        $log.info( $scope.order+"order");
+                //         $log.info( $scope.order+"order");
                         $scope.viewOrderInvoice(order);
                         ShoppingDetails.setmovies();
                         $location.path('/OrdersList');
