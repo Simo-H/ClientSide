@@ -47,7 +47,7 @@
                         <p>chose data for shipment</p>
                         <div class="form-group">
 
-                            <input ng-model="selectedDate" required  pattern="(?=.*\d)(?=.*[0-9]).{10,}"  placeholder="yyyy-MM-dd"  required min="{{currentDate | date:'yyyy-MM-dd'}}" id="theDate" name="orderdate" type="date" class="form-control inputpass form-control input-lg" /> </p>
+                            <input ng-model="orderdate" required  pattern="(?=.*\d)(?=.*[0-9]).{10,}"  placeholder="yyyy-MM-dd"  required min="{{currentDate | date:'yyyy-MM-dd'}}" id="theDate" name="orderdate" type="date" class="form-control inputpass form-control input-lg" /> </p>
                             <span ng-show="frm.orderdate.$dirty&&frm.orderdate.$error.required">required</span>
                             <span ng-show="frm.orderdate.$dirty&&frm.orderdate.$error.minlength">too short</span>
 

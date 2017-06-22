@@ -34,7 +34,7 @@
                 <form name="outerForm">
                     <div class="panel-body">
 
-                        <div class="row" ng-repeat="movie in movies track by $index">
+                        <div class="col-xs-12" class="row" ng-repeat="movie in movies track by $index">
                             <div class="col-xs-2"><img class="img-responsive" src="http://placehold.it/100x70">
                             </div>
                             <div class="col-xs-4">
@@ -44,29 +44,27 @@
                                 </h4>
                             </div>
                             <div class="col-xs-6">
-                                <div class="col-xs-6 text-right">
-                                    <h6><strong>{{movie.price_dollars}}$ <span class="text-muted">x</span></strong></h6>
+                                <div class="col-sm-6 text-right">
+                                    <h6><strong>{{movie.price_dollars}}$x <span class="text-muted"></span></strong></h6>
                                 </div>
-                                <div class="col-xs-4">
-                                    <ng-form name="innerForm">
-                                        <!--<input type="number" name= "amount" ng-model="movie.amount" min="0" max="100"  class="form-control input-sm"   >-->
-                                        <number-spin ng-model="movie.amount" ng-change="change($index,movie)" required></number-spin>
-                                    </ng-form>
+
+                                <div class="col-xs-4" align="center">
+                                        <ng-form name="innerForm">
+                                            <number-spin ng-model="movie.amount" ng-change="change($index,movie)" required></number-spin>
+                                        </ng-form>
                                 </div>
-                                <div class="col-xs-2">
-                                    <button type="button" class="btn btn-link btn-xs">
-                                        <span class="glyphicon glyphicon-trash"
-                                              ng-click="deleteMovieShopingCart(movie)"> </span>
-                                    </button>
+                                <div class="col-xs-2 ">
+                                        <button type="button" class="btn btn-link btn-xs">
+                                            <span class="glyphicon glyphicon-trash"
+                                                  ng-click="deleteMovieShopingCart(movie)"> </span>
+                                        </button>
                                 </div>
-                                <hr>
 
                             </div>
 
                             <hr>
-                            <div>
-
-
+                            <div class="col-xs-12" >
+                                <hr>
                             </div>
                         </div>
 

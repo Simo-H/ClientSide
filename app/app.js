@@ -169,7 +169,7 @@ var app = angular.module('myApp', [
             factory.user_id = userId;
 
             $rootScope.$broadcast('updateUser');
-            // $log.info(factory.isLoggedIn);
+            $log.info(factory.user_id);
         }
         factory.getUserName = function () {
             return factory.userName;
@@ -240,6 +240,10 @@ var app = angular.module('myApp', [
             $rootScope.$broadcast('updateShopping');
             factory.updateCookies(userName);
 
+        }
+        factory.setmovies=function()
+        {
+            factory.movies = [];
         }
         factory.updateMovieAmount = function (index,movie,userName) {
             $log.info("index: "+ index + " movie amount: "+movie.amount);
@@ -463,16 +467,17 @@ var app = angular.module('myApp', [
 
         }
         $scope.gotoCheckout = function () {
+            if (ShoppingDetails.movies.length>0){
             var modalInstance = $uibModal.open({
                 templateUrl: 'Templates/Main/CheckoutModal.html',
                 controller: 'CheckoutModalController',
-            });
+            });}
         }
 
     })
-    .controller('OrderListController', function ($scope, $log, $http, $location, UserDetails) {
-        $scope.OrdersList = [];
-        $http.get("http://localhost:8888/orders/previousOrders?client_id=" + UserDetails.user_id).success(function (response) {
+    .controller('OrderListController',function($scope,$log,$http,$location,$uibModal,UserDetails){
+        $scope.OrdersList=[];
+        $http.get("http://localhost:8888/orders/previousOrders?client_id="+UserDetails.user_id).success(function (response) {
             $scope.OrdersList = response;
 
         });
@@ -498,11 +503,12 @@ var app = angular.module('myApp', [
             });
         };
     })
-    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log, $location, $http, ShoppingDetails, UserDetails) {
-        $scope.pay = "dollar";
+    .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log,$location,$uibModal, $http,ShoppingDetails,UserDetails) {
+        $scope.pay="dollar";
         $scope.payment;
-        $scope.totalPrice = 0
-        $scope.movies = ShoppingDetails.movies;
+        $scope.orderdate;
+        $scope.totalPrice=0
+        $scope.movies=ShoppingDetails.movies;
         angular.forEach($scope.movies, function (movie) {
             $scope.totalPrice = movie.amount * movie.price_dollars + $scope.totalPrice;
         })
@@ -526,12 +532,57 @@ var app = angular.module('myApp', [
         //     // $location.path('/ShoppingCart');
         //     this.$hide();
         // }
-        $scope.submit = function () {
-            var res = $http.post('http://localhost:8888/orders/addOrder', $scope.movies, {headers: {'Content-Type': 'application/json'}});
-            $log.info("check");
+        $scope.viewOrderInvoice = function (order) {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'Templates/Main/OrderInvoiceModal.html',
+                controller: 'OrderInvoiceModalController',
+                size: 'lg',
+                resolve: {
+                    order: function () {
+                        return order;
+                    }
+                }
+            });
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
 
-            res.success(function (data, status, headers, config) {
-                alert("done: " + JSON.stringify({data: data}));
+        $scope.submit=function(){
+           // $log.info(factory.user_id);
+            var order = {
+
+                total_cost_dollar:$scope.payment ,
+                date_of_purchase:new Date() ,
+                client_id:UserDetails.user_id ,
+                date_of_shipment: $scope.orderdate,
+                movies: $scope.movies
+            };
+
+            $log.info(order)
+
+            var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}});
+            res.success(function (data, status, headers, config)
+            {
+                $log.info(data+"data");
+                $log.info(res+"res");
+
+               // order.order_id=data;
+
+                // var res2=$http.get("http://localhost:8888/orders/getOrder?order_id="+data ).success(function (response) {
+                //  res.success(function (res2, status, headers, config) {
+                //         $log.info(res2);
+                        $log.info( $scope.order+"order");
+                        $scope.viewOrderInvoice(order);
+                        ShoppingDetails.setmovies();
+                        $location.path('/OrdersList');
+                 //    });
+                 // });
+
+
+                //alert("done: " + JSON.stringify({data: data}));
 
             });
             res.error(function (data, status, headers, config) {
