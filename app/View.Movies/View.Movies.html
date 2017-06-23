@@ -55,15 +55,15 @@
                             <li data-target="#carousel-example-generic" data-slide-to="1"></li>
                             <li data-target="#carousel-example-generic" data-slide-to="2"></li>
                         </ol>
-                        <div class="carousel-inner">
+                        <div  class="carousel-inner">
                             <div class="item active">
-                                <img class="slide-image" src="http://placehold.it/800x300" alt="">
+                                <img style="height: 400px;" class="slide-image" src="http://localhost:8888/images/ (2).jpg" alt="">
                             </div>
                             <div class="item">
-                                <img class="slide-image" src="http://placehold.it/800x300" alt="">
+                                <img style="height: 400px;" class="slide-image" src="http://localhost:8888/images/ (43).jpg" alt="">
                             </div>
                             <div class="item">
-                                <img class="slide-image" src="http://placehold.it/800x300" alt="">
+                                <img style="height: 400px;" class="slide-image" src="http://localhost:8888/images/ (19).jpg" alt="">
                             </div>
                         </div>
                         <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
@@ -87,7 +87,7 @@
                     <div ng-repeat="movie in catagoryList | filter: {name: searchByMovieName } | limitTo:showQuantity"
                          class="col-sm-4 col-lg-4 col-md-4">
                         <div class="thumbnail">
-                            <img src="http://placehold.it/320x150" alt="">
+                            <img style="width: 300px; height: 300px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
                             <div class="caption">
                                 <h4 class="pull-right">${{movie.price_dollars}}</h4>
                                 <h4><a ng-click="viewMovie(movie)">{{movie.name}}</a>

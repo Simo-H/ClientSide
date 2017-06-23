@@ -274,12 +274,15 @@ var app = angular.module('myApp', [
         });
     })
     .controller('moviesController', function ($scope, $http, $log, $uibModal, ShoppingDetails, MoviesUtilities,$cookies,UserDetails) {
-        $scope.categories = new Array('action', 'animation', 'sci-fi', 'comics');
+        $scope.categories = new Array('Action', 'Adventure', 'Animation', 'Biography','Comedy','Crime','Documentary','Drama','Fantasy','Music','Thriller','Mystery');
         $scope.searchByCategory = "";
         $scope.searchByMovieName = "";
         $scope.movisByCategory = {};
         $scope.amount = '1';
         $scope.showQuantity = 5;
+        $scope.pictureLink = function (movie_id) {
+            return 'http://localhost:8888/images/ (' + movie_id +").jpg";
+        }
         angular.forEach($scope.categories, function (catagory) {
             // Here, the lang object will represent the lang you called the request on for the scope of the function
             $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + catagory).success(function (response) {
@@ -563,8 +566,8 @@ var app = angular.module('myApp', [
 
             $log.info(order)
 
-            var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}})
-                .success(function (data, status, headers, config)
+            var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}});
+            res.success(function (data, status, headers, config)
             {
                 $log.info(data);
                 // $log.info(res);
