@@ -577,8 +577,14 @@ var app = angular.module('myApp', [
                     $location.path('/OrdersList');
                 }
                 else{
-                    var missing= "dfgdgdf";
-                    bootbox.alert(missing)}
+                    var message="<br> <p style= "+'"font-size:160%;"'+">Order was not completed. The following movies are currently out of stock:</p> <br> " +
+                        "<p align="+'"center"'+"> ";
+                    for ( var i = 0; i < data.length; i++) {
+                        message +=(i+1).toString() +". "+ data[i].name + "<br>";
+                        $log.info(data[i]);
+                    }
+                    message+="</p>"
+                    bootbox.alert(message)}
             });
             res.error(function (data, status, headers, config) {
                 alert("failure message: " + JSON.stringify({data: data}));
