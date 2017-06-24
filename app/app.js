@@ -394,8 +394,9 @@ var app = angular.module('myApp', [
                 favourite_catergory2: $scope.favourite_catergory2,
                 username: $scope.username
             };
-            // $log.info(first_name);
+            $log.info(user.username);
             // var password= $scope.last_name;
+
             var res = $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
                 $scope.message = data;
