@@ -87,7 +87,7 @@
                     <div ng-repeat="movie in catagoryList | filter: {name: searchByMovieName } | limitTo:showQuantity"
                          class="col-sm-4 col-lg-4 col-md-4">
                         <div class="thumbnail">
-                            <img style="width: 300px; height: 300px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
+                            <img style="width: 300px; height: 250px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
                             <div class="caption">
                                 <h4 class="pull-right">${{movie.price_dollars}}</h4>
                                 <h4><a ng-click="viewMovie(movie)">{{movie.name}}</a>
