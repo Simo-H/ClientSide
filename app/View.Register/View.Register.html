@@ -112,12 +112,11 @@
 
                             <div  class="form-group">
                                 <select ng-model="country" required  class="form-control input-lg" name="country"    class="custom-select mb-2 mr-sm-2 mb-sm-0" id="country" >
-                                    <option selected class="form-control input-lg">Choose...</option>
-                                    <option value="1" class="form-control input-lg">One</option>
-                                    <option value="2" class="form-control input-lg">Two</option>
-                                    <option value="3" class="form-control input-lg">Three</option>
-                                    <span ng-show="frm.country.$dirty&&frm.country.$error.required">required</span>
-
+                                    <dropdown multiple id="dropdown"></dropdown>
+                                    <!--<div  ng-repeat="country in countrylist" >-->
+                                        <!--<option value={{country}} class="form-control input-lg">{{country}}</option>-->
+                                        <!--<span ng-show="frm.country.$dirty&&frm.country.$error.required">required</span>-->
+                                    <!--</div>-->
                                 </select>
                                 <span ng-show="frm.country.$dirty&&frm.country.$error.required">required</span>
                             </div>
