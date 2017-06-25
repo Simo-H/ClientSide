@@ -452,20 +452,17 @@ var app = angular.module('myApp', [
             // $log.info(user.username);
             // var password= $scope.last_name;
 
-
-
-
-
-
-            var res = $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}});
-            res.success(function (data, status, headers, config) {
-                $scope.message = data;
-                // $log.info(first_name);
-
-                UserDetails.Login($scope.username,$scope.password);
-            });
-            res.error(function (data, status, headers, config) {
-                alert("failure message: " + JSON.stringify({data: data}));
+            $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}})
+           .success(function (data, status, headers, config) {
+                if (data.statusCode!=400)
+                {
+                    $log.info("111111");
+                    UserDetails.Login($scope.username,$scope.password);
+                }
+            })
+            .error(function (data, status, headers, config) {
+                $log.info("3333333");
+                bootbox.alert("<h1>register fail</h1>");
             });
 
         }
