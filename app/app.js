@@ -369,15 +369,45 @@ var app = angular.module('myApp', [
         }
 
     })
-    .controller('LoginController', function ($scope, $http, $log, UserDetails, $cookies, $location) {
+    .controller('LoginController', function ($scope, $http, $log, UserDetails, $cookies, $location,$uibModal) {
         $scope.username = '';
         $scope.password = '';
         $scope.Login = function () {
             UserDetails.Login($scope.username,$scope.password);
         }
-
+        $scope.RestorePassword=function()
+        {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'Templates/Main/RestorePasswordModalController.html',
+                controller: 'RestorePasswordModalController',
+            });
+        }
     })
     .controller('RegisterController', function ($scope, $http, $log,UserDetails) {
+        $scope.countrylist=[];
+        var xmlhttp;
+        if(window.XMLHttpRequest){
+            xmlhttp= new XMLHttpRequest();
+        }
+        else{
+            xmlhttp= new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("GET","countries.xml",false);
+        xmlhttp.send();
+        var xmlDoc=xmlhttp.responseXML;
+        $log.info(xmlDoc);
+        var doc=xmlDoc.getElementsByTagName("Country");
+        for(var i=0; i<doc.length;i++)
+        {
+           // $scope.countrylist[doc[i].getElementsByTagName("Name")];
+            var country_name=doc[i].getElementsByTagName("Name")[0].childNodes[0].nodeValue;
+            $scope.countrylist.push(country_name);
+
+            //  $log.info(doc[i].getElementsByTagName("Name")[0].childNodes[0].nodeValue);
+        }
+        $log.info($scope.countrylist);
+
+        // xmlhttp.close();
         $scope.submit = function () {
             var user = {
                 client_id: $scope.client_id,
@@ -396,6 +426,11 @@ var app = angular.module('myApp', [
             };
             $log.info(user.username);
             // var password= $scope.last_name;
+
+
+
+
+
 
             var res = $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
@@ -633,4 +668,24 @@ var app = angular.module('myApp', [
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+    })
+    .controller('RestorePasswordModalController', function ($scope, $log,$http) {
+        $scope.username ;
+        $scope.security_answer ;
+        $scope.restore=function(){
+            $log.info($scope.username);
+            $log.info( $scope.security_answer);
+
+           var s= $http.get("http://localhost:8888/clients/restorePassword?username=" + $scope.username+"&security_answer="+ $scope.security_answer)
+                .success(function (response) {
+                    if(response.length==0)
+                    {
+                        bootbox.alert("No password found");
+                    }
+                    else{
+                        bootbox.alert("Password found:"+response[0].password);
+                    }
+            });
+
+        }
     });
