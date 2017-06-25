@@ -149,7 +149,7 @@ var app = angular.module('myApp', [
     .factory('UserDetails', function ($rootScope, $log,$cookies,ShoppingDetails,$location,$http) {
         var factory = {};
         factory.isLoggedIn = false;
-        factory.userName = "Guest";
+        factory.username = "Guest";
         factory.user_id;
         factory.dollar = true;
 
@@ -169,47 +169,58 @@ var app = angular.module('myApp', [
             factory.user_id = userId;
 
             $rootScope.$broadcast('updateUser');
-            $log.info(factory.user_id);
+            // $log.info(factory.user_id);
         }
-        factory.getUserName = function () {
-            return factory.userName;
+        factory.getUsername = function () {
+            return factory.username;
         }
-        factory.setUserName = function (name) {
-            factory.userName = name;
+        factory.setUsername = function (name) {
+            factory.username = name;
 
             $rootScope.$broadcast('updateUser');
 
         }
         factory.loadUserData = function () {
+            // var cookies = $cookies.getAll();
+            // angular.forEach(cookies, function (v, k) {
+            //     $cookies.remove(k);
+            //
+            // });
             var lastUserLoggedIn = $cookies.get('!LastUser');
-            var firstLogin = undefined != lastUserLoggedIn;
-            if(firstLogin)
+            var NotfirstLogin = undefined != lastUserLoggedIn;
+            // $log.info($cookies.get(lastUserLoggedIn));
+            // $log.info(NotfirstLogin);
+            if(NotfirstLogin)
             {
                 var User = JSON.parse($cookies.get(lastUserLoggedIn));
             }
-            factory.setUserStatus(firstLogin && User.UserStatus === 'true');
+            $log.info(NotfirstLogin && User.UserStatus === 'true');
+            factory.setUserStatus(NotfirstLogin && User.UserStatus === 'true');
             if (factory.getUserStatus() === true)
             {
-                factory.setUserName(User.userName);
+                factory.setUsername(User.username);
                 factory.setUserId(User.UserID);
                 if(undefined != User.Cart)
                 {
                     ShoppingDetails.movies = User.Cart;
                 }
             }
+            // $log.info(factory.getUserStatus());
         }
         factory.Login = function (username,password) {
             // var login = {
             //     username: $scope.username,
             //     password: $scope.password,
             // }
+            // $log.info($cookies.getAll());
             var login = {
                 username: username,
                 password: password,
             }
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-                var userSession = {"userמame": data[0].username, "UserID": data[0].client_id, "UserStatus": "true"}
+                $log.info(data[0]);
+                var userSession = {"username": data[0].username, "UserID": data[0].client_id, "UserStatus": "true"}
 
                 if (undefined == $cookies.get(data[0].username)) {
                     $cookies.put(data[0].username, JSON.stringify(userSession));
@@ -217,16 +228,17 @@ var app = angular.module('myApp', [
                 else {
                     var logoutUser = JSON.parse($cookies.get(data[0].username));
                     logoutUser.UserStatus = "true";
-                    // $log.info(logoutUser);
                     $cookies.put(data[0].username, JSON.stringify(logoutUser));
                 }
                 $cookies.put('!LastUser', data[0].username);
                 // $log.info($cookies.get(data[0].username));
                 factory.setUserStatus(true);
                 factory.setUserId(data[0].client_id);
-                factory.setUserName(data[0].username);
+                factory.setUsername(data[0].username);
                 factory.loadUserData();
+                $log.info(factory.getUsername() +" : " + factory.getUserId() + " : " + factory.getUserStatus());
                 $location.path('/');
+
             });
             res.error(function (data, status, headers, config) {
                 alert("failure message: " + JSON.stringify({data: data}));
@@ -254,41 +266,41 @@ var app = angular.module('myApp', [
 
         factory.movies = [];
         factory.getMovies = function () {
-            $log.info(factory.movies);
+            // $log.info(factory.movies);
 
             return factory.movies;
 
         }
-        factory.addMovie = function (movie,userName) {
+        factory.addMovie = function (movie,username) {
             if (undefined == factory.movies) {
                 factory.movies = [];
             }
             factory.movies.push(movie);
             $log.info("tam tam tam");
             $rootScope.$broadcast('updateShopping');
-            factory.updateCookies(userName);
+            factory.updateCookies(username);
         }
-        factory.removeMovie = function (movie,userName) {
+        factory.removeMovie = function (movie,username) {
             var index = factory.movies.indexOf(movie);
             factory.movies.splice(index, 1);
             $rootScope.$broadcast('updateShopping');
-            factory.updateCookies(userName);
+            factory.updateCookies(username);
 
         }
         factory.setmovies=function()
         {
             factory.movies = [];
         }
-        factory.updateMovieAmount = function (index,movie,userName) {
-            $log.info("index: "+ index + " movie amount: "+movie.amount);
+        factory.updateMovieAmount = function (index,movie,username) {
+            // $log.info("index: "+ index + " movie amount: "+movie.amount);
             factory.movies[index].amount = movie.amount;
-            factory.updateCookies(userName);
+            factory.updateCookies(username);
         }
-        factory.updateCookies = function (userName) {
-            var userCookie = $cookies.get(userName);
+        factory.updateCookies = function (username) {
+            var userCookie = $cookies.get(username);
             var User = JSON.parse(userCookie);
             User.Cart = factory.movies;
-            $cookies.put(userName, JSON.stringify(User));
+            $cookies.put(username, JSON.stringify(User));
         }
         return factory;
     })
@@ -363,7 +375,7 @@ var app = angular.module('myApp', [
             if (amount > 0) {
                 $scope.addAmountToMovie(movie, amount);
                 // $log.info(movie);
-                ShoppingDetails.addMovie(movie,UserDetails.getUserName());
+                ShoppingDetails.addMovie(movie,UserDetails.getUsername());
             }
 
         }
@@ -394,7 +406,7 @@ var app = angular.module('myApp', [
                 favourite_catergory2: $scope.favourite_catergory2,
                 username: $scope.username
             };
-            $log.info(user.username);
+            // $log.info(user.username);
             // var password= $scope.last_name;
 
             var res = $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}});
@@ -463,13 +475,13 @@ var app = angular.module('myApp', [
             // $log.info("1");
 
             $scope.totalPrice = 0;
-            ShoppingDetails.updateMovieAmount(index,movie,UserDetails.getUserName());
+            ShoppingDetails.updateMovieAmount(index,movie,UserDetails.getUsername());
             angular.forEach($scope.movies, function (movie) {
                 $scope.totalPrice = movie.amount * movie.price_dollars + $scope.totalPrice;
             })
         }
         $scope.deleteMovieShopingCart = function (movie) {
-            ShoppingDetails.removeMovie(movie,UserDetails.getUserName());
+            ShoppingDetails.removeMovie(movie,UserDetails.getUsername());
         };
         $scope.getorderlist = function () {
             $location.path('/OrdersList');
@@ -570,7 +582,7 @@ var app = angular.module('myApp', [
                 movies: $scope.movies
             };
 
-            $log.info(order)
+            // $log.info(order)
 
             var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config)
@@ -587,7 +599,7 @@ var app = angular.module('myApp', [
                         "<p align="+'"center"'+"> ";
                     for ( var i = 0; i < data.length; i++) {
                         message +=(i+1).toString() +". "+ data[i].name + "<br>";
-                        $log.info(data[i]);
+                        // $log.info(data[i]);
                     }
                     message+="</p>"
                     bootbox.alert(message)}
@@ -600,21 +612,22 @@ var app = angular.module('myApp', [
     })
     .controller('NavController', function ($scope, UserDetails, $location, $log, $cookies, ShoppingDetails) {
         UserDetails.loadUserData();
-        $scope.userName = UserDetails.getUserName();
+        $scope.username = UserDetails.getUsername();
         $scope.isLoggedIn = UserDetails.getUserStatus();
         $scope.$on('updateUser', function () {
-            $scope.userName = UserDetails.getUserName();
+            $scope.username = UserDetails.getUsername();
             $scope.isLoggedIn = UserDetails.getUserStatus();
             // $log.info($scope.isLoggedIn);
             // $log.info($scope.isLoggedIn);
         });
         $scope.logout = function () {
-            $cookies.put('!LastUser', $scope.userName)
-            var logoutUser = JSON.parse($cookies.get($scope.userName));
+            $cookies.put('!LastUser', $scope.username)
+            $log.info($cookies.get($scope.username));
+            var logoutUser = JSON.parse($cookies.get($scope.username));
             logoutUser.UserStatus = "false";
-            // $log.info($cookies.get($scope.userName));
-            $cookies.put($scope.userName, JSON.stringify(logoutUser));
-            UserDetails.setUserName("Guest");
+            $cookies.put($scope.username, JSON.stringify(logoutUser));
+            $log.info($cookies.get($scope.username));
+            UserDetails.setUsername("Guest");
             UserDetails.setUserStatus(false);
             UserDetails.setUserId("");
             $location.path('/');
