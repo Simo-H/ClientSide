@@ -151,8 +151,15 @@ var app = angular.module('myApp', [
         factory.isLoggedIn = false;
         factory.username = "Guest";
         factory.user_id;
+        factory.userLastEntryDate = new Date();
         factory.dollar = true;
-
+        factory.getUserLastEntryDate = function () {
+            return factory.userLastEntryDate;
+        }
+        factory.setUserLastEntryDate = function (date) {
+            factory.userLastEntryDate = date;
+            $rootScope.$broadcast('updateUser');
+        }
         factory.getUserStatus = function () {
             return factory.isLoggedIn;
         }
@@ -200,6 +207,7 @@ var app = angular.module('myApp', [
             {
                 factory.setUsername(User.username);
                 factory.setUserId(User.UserID);
+                // factory.setUserLastEntryDate(User.UserLastEntryDate)
                 if(undefined != User.Cart)
                 {
                     ShoppingDetails.movies = User.Cart;
@@ -213,14 +221,15 @@ var app = angular.module('myApp', [
             //     password: $scope.password,
             // }
             // $log.info($cookies.getAll());
+            var LastEntryDate = new Date();
             var login = {
                 username: username,
                 password: password,
             }
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-                $log.info(data[0]);
-                var userSession = {"username": data[0].username, "UserID": data[0].client_id, "UserStatus": "true"}
+                // $log.info(data[0]);
+                var userSession = {"username": data[0].username, "UserID": data[0].client_id, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate}
 
                 if (undefined == $cookies.get(data[0].username)) {
                     $cookies.put(data[0].username, JSON.stringify(userSession));
@@ -228,15 +237,19 @@ var app = angular.module('myApp', [
                 else {
                     var logoutUser = JSON.parse($cookies.get(data[0].username));
                     logoutUser.UserStatus = "true";
+                    LastEntryDate = logoutUser.UserLastEntryDate;
+                    logoutUser.UserLastEntryDate = new Date();
+
                     $cookies.put(data[0].username, JSON.stringify(logoutUser));
                 }
                 $cookies.put('!LastUser', data[0].username);
                 // $log.info($cookies.get(data[0].username));
+                factory.setUserLastEntryDate(LastEntryDate);
                 factory.setUserStatus(true);
                 factory.setUserId(data[0].client_id);
                 factory.setUsername(data[0].username);
                 factory.loadUserData();
-                $log.info(factory.getUsername() +" : " + factory.getUserId() + " : " + factory.getUserStatus());
+                $log.info(factory.getUsername() +" : " + factory.getUserId() + " : " + factory.getUserStatus() + " : " + factory.getUserLastEntryDate());
                 $location.path('/');
 
             });
@@ -614,6 +627,7 @@ var app = angular.module('myApp', [
         UserDetails.loadUserData();
         $scope.username = UserDetails.getUsername();
         $scope.isLoggedIn = UserDetails.getUserStatus();
+        $scope.LastEntryDate = UserDetails.getUserLastEntryDate();
         $scope.$on('updateUser', function () {
             $scope.username = UserDetails.getUsername();
             $scope.isLoggedIn = UserDetails.getUserStatus();
