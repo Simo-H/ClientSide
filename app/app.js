@@ -209,7 +209,7 @@ var app = angular.module('myApp', [
             }
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-                var userSession = {"userName": data[0].username, "UserID": data[0].client_id, "UserStatus": "true"}
+                var userSession = {"userמame": data[0].username, "UserID": data[0].client_id, "UserStatus": "true"}
 
                 if (undefined == $cookies.get(data[0].username)) {
                     $cookies.put(data[0].username, JSON.stringify(userSession));
@@ -402,11 +402,12 @@ var app = angular.module('myApp', [
                 $scope.message = data;
                 // $log.info(first_name);
 
+                UserDetails.Login($scope.username,$scope.password);
             });
             res.error(function (data, status, headers, config) {
                 alert("failure message: " + JSON.stringify({data: data}));
             });
-            UserDetails.Login($scope.username,$scope.password);
+
         }
     })
     .controller('MovieModalController', function ($scope, $uibModalInstance, movie, $log, $http, MoviesUtilities, ShoppingDetails) {
