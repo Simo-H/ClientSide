@@ -146,6 +146,22 @@ var app = angular.module('myApp', [
             return boolean ? 'Yes' : 'No';
         }
     })
+    .filter('filterByRanking', function ($log) {
+        return function (items, ranking) {
+            var result = [];
+            // $log.info(text);
+            if (ranking != "") {
+                angular.forEach(items, function (item) {
+                    if(item.ranking > ranking)
+                        result.push(item)
+                });
+            }
+            else {
+                result = items;
+            }
+            return result;
+        };
+    })
     .factory('UserDetails', function ($rootScope, $log,$cookies,ShoppingDetails,$location,$http) {
         var factory = {};
         factory.isLoggedIn = false;
@@ -153,6 +169,8 @@ var app = angular.module('myApp', [
         factory.user_id;
         factory.userLastEntryDate = new Date();
         factory.dollar = true;
+        factory.favourite_catergory = "";
+        factory.favourite_catergory2 = "";
         factory.getUserLastEntryDate = function () {
             return factory.userLastEntryDate;
         }
@@ -207,6 +225,8 @@ var app = angular.module('myApp', [
             {
                 factory.setUsername(User.username);
                 factory.setUserId(User.UserID);
+                factory.favourite_catergory = User.favourite_catergory;
+                factory.favourite_catergory2 = User.favourite_catergory2;
                 // factory.setUserLastEntryDate(User.UserLastEntryDate)
                 if(undefined != User.Cart)
                 {
@@ -228,9 +248,10 @@ var app = angular.module('myApp', [
             }
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-                // $log.info(data[0]);
-                var userSession = {"username": data[0].username, "UserID": data[0].client_id, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate}
 
+                var userSession = {"username": data[0].username, "UserID": data[0].client_id, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate,
+                    "favourite_catergory": data[0].favourite_catergory, "favourite_catergory2": data[0].favourite_catergory2}
+                $log.info(userSession);
                 if (undefined == $cookies.get(data[0].username)) {
                     $cookies.put(data[0].username, JSON.stringify(userSession));
                 }
@@ -239,7 +260,8 @@ var app = angular.module('myApp', [
                     logoutUser.UserStatus = "true";
                     LastEntryDate = logoutUser.UserLastEntryDate;
                     logoutUser.UserLastEntryDate = new Date();
-
+                    factory.favourite_catergory = data[0].favourite_catergory;
+                    factory.favourite_catergory2 = data[0].favourite_catergory2;
                     $cookies.put(data[0].username, JSON.stringify(logoutUser));
                 }
                 $cookies.put('!LastUser', data[0].username);
@@ -248,6 +270,8 @@ var app = angular.module('myApp', [
                 factory.setUserStatus(true);
                 factory.setUserId(data[0].client_id);
                 factory.setUsername(data[0].username);
+                factory.favourite_catergory = data[0].favourite_catergory;
+                factory.favourite_catergory2 = data[0].favourite_catergory2;
                 factory.loadUserData();
                 $log.info(factory.getUsername() +" : " + factory.getUserId() + " : " + factory.getUserStatus() + " : " + factory.getUserLastEntryDate());
                 $location.path('/');
@@ -342,9 +366,22 @@ var app = angular.module('myApp', [
         $scope.movisByCategory = {};
         $scope.amount = '1';
         $scope.showQuantity = 5;
+        $scope.recommendedMovies = [];
+        // $log.info("test" + UserDetails.favourite_catergory);
+        $scope.isLoggedIn = UserDetails.getUserStatus();
         $scope.pictureLink = function (movie_id) {
             return 'http://localhost:8888/images/ (' + movie_id +").jpg";
         }
+        $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + UserDetails.favourite_catergory).success(function (response) {
+            $scope.recommendedMovies.push.apply($scope.recommendedMovies, response);
+            $log.info(UserDetails.favourite_catergory);
+        });
+        $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + UserDetails.favourite_catergory2).success(function (response) {
+            $scope.recommendedMovies.push.apply($scope.recommendedMovies, response);
+            // $log.info($scope.recommendedMovies);
+
+        });
+
         angular.forEach($scope.categories, function (catagory) {
             // Here, the lang object will represent the lang you called the request on for the scope of the function
             $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + catagory).success(function (response) {
@@ -392,6 +429,12 @@ var app = angular.module('myApp', [
             }
 
         }
+        $scope.$on('updateUser', function () {
+            $scope.isLoggedIn = UserDetails.getUserStatus();
+            // $log.info($scope.isLoggedIn);
+            // $log.info($scope.isLoggedIn);
+        });
+
 
     })
     .controller('LoginController', function ($scope, $http, $log, UserDetails, $cookies, $location,$uibModal) {
