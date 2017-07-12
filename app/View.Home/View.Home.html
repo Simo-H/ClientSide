@@ -54,7 +54,7 @@
             <div class="row">
 
                 <div ng-repeat="movie in moviesHot"
-                     class="col-sm-4 col-lg-4 col-md-4">
+                     class="col-sm-4 col-lg-3 col-md-3">
                     <div class="thumbnail">
                         <img style="width: 300px; height: 250px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
                         <div class="caption">
@@ -65,7 +65,7 @@
                                                                                    href="http://www.bootsnipp.com">Bootsnipp
                                 - http://bootsnipp.com</a>.</p>
                         </div>
-                        <div class="ratings" style="padding: 0 10px 5px 10px">
+                        <div class="ratings" >
                             <a ng-click="addMovieToCart(movie,amount)" class="pull-right nounderline" style="text-decoration: none !important;margin-left: 15px;cursor: pointer;">
                                     <span class="glyphicon glyphicon-shopping-cart"
                                           style="font-size: 25px;"></span><span class="glyphicon glyphicon-plus" style="font-size: 12px;"></span>
@@ -81,22 +81,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-sm-4 col-lg-4 col-md-4">
-                    <h4><a href="#">Like this template?</a>
-                    </h4>
-                    <p>If you like this template, then check out
-                        <button ng-click="addMovieToCart(movie)" target="_blank"
-                                href="http://maxoffsky.com/code-blog/laravel-shop-tutorial-1-building-a-review-system/">
-                            this tutorial
-                        </button>
-                        on how to build a working review system for your online store!
-                    </p>
-                    <button class="btn btn-primary" target="_blank" ng-click="showQuantity = showQuantity+6">
-                        View More
-                    </button>
-                </div>
-
             </div>
         </div>
         <!-- /.row -->
