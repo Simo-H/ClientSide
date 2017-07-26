@@ -29,18 +29,18 @@
 <body>
 
 <!-- Page Content -->
-<div class="container">
+<div class="container" style="margin: 50px 100px 100px 250px;">
 
     <div class="row">
 
         <div class="col-md-3">
-            <p class="lead">Shop Name</p>
+            <p class="lead">Search</p>
+            <h4>By Category</h4>
             <input type="text" ng-model="searchByCategory">
+            <h4 >By Movie Name</h4>
             <input type="text" ng-model="searchByMovieName">
             <div class="list-group">
-                <a href="#" class="list-group-item">Category 1</a>
-                <a href="#" class="list-group-item">Category 2</a>
-                <a href="#" class="list-group-item">Category 3</a>
+                <a style="cursor: pointer;" ng-repeat="cat in categories" ng-click="scrollTo(cat)" class="list-group-item">{{cat}}</a>
             </div>
         </div>
 
@@ -69,12 +69,13 @@
                         <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
                             <span class="glyphicon glyphicon-chevron-left"></span>
                         </a>
-                        <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                        <span class="right carousel-control" href="#carousel-example-generic" data-slide="next">
                             <span class="glyphicon glyphicon-chevron-right"></span>
-                        </a>
+                        </span>
                     </div>
                 </div>
             </div>
+            <div class="row">
             <div ng-show="isLoggedIn" class="col-lg-12">
                 <h3>Recommended</h3>
             </div>
@@ -82,13 +83,11 @@
                  class="col-sm-4 col-lg-4 col-md-4">
                 <div class="thumbnail">
                     <img style="width: 300px; height: 250px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
-                    <div class="caption">
+                    <div class="caption" style="height: auto">
                         <h4 class="pull-right">${{movie.price_dollars}}</h4>
                         <h4><a ng-click="viewMovie(movie)">{{movie.name}}</a>
                         </h4>
-                        <p>See more snippets like this online store item at <a target="_blank"
-                                                                               href="http://www.bootsnipp.com">Bootsnipp
-                            - http://bootsnipp.com</a>.</p>
+                        <button ng-click="viewMovie(movie)" class="btn btn-default">More Info</button>
                     </div>
                     <div class="ratings" style="padding: 0 10px 5px 10px">
                         <a ng-click="addMovieToCart(movie,amount)" class="pull-right nounderline" style="text-decoration: none !important;margin-left: 15px;cursor: pointer;">
@@ -97,7 +96,7 @@
                         </a>
                         <!--<input class="pull-right form-control input-xs" type="number" value="1" style="width: 40px;height: 25px">-->
                         <number-spin data-ng-model="amount"></number-spin>
-                        <p style="margin-right: 5px">
+                        <p style=" left: 0;margin-right: 5px">
                                     <span  ng-repeat="i in getNumber(movie.ranking)"
                                            class="glyphicon glyphicon-star"></span><span
                                 ng-repeat="i in getNumber(5-movie.ranking)"
@@ -106,38 +105,33 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4 col-lg-4 col-md-4">
-                <h4><a href="#">Like this template?</a>
+            <div ng-show="isLoggedIn" class="col-sm-4 col-lg-4 col-md-4">
+                <h4><a href="#">Like this kind of movies?</a>
                 </h4>
-                <p>If you like this template, then check out
-                    <button ng-click="addMovieToCart(movie)" target="_blank"
-                            href="http://maxoffsky.com/code-blog/laravel-shop-tutorial-1-building-a-review-system/">
-                        this tutorial
-                    </button>
-                    on how to build a working review system for your online store!
+                <p>click here to view more..
                 </p>
                 <button class="btn btn-primary" target="_blank" ng-click="showQuantity = showQuantity+6">
                     View More
                 </button>
             </div>
-            <div ng-repeat="(category, catagoryList) in movisByCategory |  filterCategories: searchByCategory"
+            </div>
+            <div id="{{category}}" ng-repeat="(category, catagoryList) in movisByCategory |  filterCategories: searchByCategory"
                  class="row">
                 <div class="col-lg-12">
                     <h3>{{category}}</h3>
                 </div>
                 <div class="row">
 
-                    <div ng-repeat="movie in catagoryList | filter: {name: searchByMovieName } | limitTo:showQuantity"
+                    <div  ng-repeat="movie in catagoryList | filter: {name: searchByMovieName } | limitTo:showQuantity"
                          class="col-sm-4 col-lg-4 col-md-4">
                         <div class="thumbnail">
                             <img style="width: 300px; height: 250px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
-                            <div class="caption">
+
+                            <div class="caption" style="height: auto">
                                 <h4 class="pull-right">${{movie.price_dollars}}</h4>
                                 <h4><a ng-click="viewMovie(movie)">{{movie.name}}</a>
                                 </h4>
-                                <p>See more snippets like this online store item at <a target="_blank"
-                                                                                       href="http://www.bootsnipp.com">Bootsnipp
-                                    - http://bootsnipp.com</a>.</p>
+                                <button ng-click="viewMovie(movie)" class="btn btn-default">More Info</button>
                             </div>
                             <div class="ratings" style="padding: 0 10px 5px 10px">
                                 <a ng-click="addMovieToCart(movie,amount)" class="pull-right nounderline" style="text-decoration: none !important;margin-left: 15px;cursor: pointer;">
@@ -157,14 +151,9 @@
                     </div>
 
                     <div class="col-sm-4 col-lg-4 col-md-4">
-                        <h4><a href="#">Like this template?</a>
+                        <h4><a href="#">Like this kind of movies?</a>
                         </h4>
-                        <p>If you like this template, then check out
-                            <button ng-click="addMovieToCart(movie)" target="_blank"
-                                    href="http://maxoffsky.com/code-blog/laravel-shop-tutorial-1-building-a-review-system/">
-                                this tutorial
-                            </button>
-                            on how to build a working review system for your online store!
+                        <p>click here to view more..
                         </p>
                         <button class="btn btn-primary" target="_blank" ng-click="showQuantity = showQuantity+6">
                             View More
@@ -186,14 +175,6 @@
 
     <hr>
 
-    <!-- Footer -->
-    <footer>
-        <div class="row">
-            <div class="col-lg-12">
-                <p>Copyright &copy; Your Website 2014</p>
-            </div>
-        </div>
-    </footer>
 
 </div>
 <!-- /.container -->

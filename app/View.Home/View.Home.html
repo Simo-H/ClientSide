@@ -50,11 +50,54 @@
         <!-- /.row -->
 
         <!-- Page Features -->
-        <div class="row text-center">
+
             <div class="row">
 
                 <div ng-repeat="movie in moviesHot"
-                     class="col-sm-4 col-lg-3 col-md-3">
+                     class="col-sm-4 col-lg-3 col-md-3" >
+                    <div class="thumbnail">
+                        <img style="width: 300px; height: 250px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
+                        <div class="caption">
+                            <h4 class="pull-right">${{movie.price_dollars}}</h4>
+                            <h4><a ng-click="viewMovie(movie)">{{movie.name}}</a>
+                            </h4>
+                            <div class="ratings" style="padding: 0 10px 5px 10px">
+                                <a ng-click="addMovieToCart(movie,amount)" class="pull-right nounderline" style="text-decoration: none !important;margin-left: 15px;cursor: pointer;">
+                                    <span class="glyphicon glyphicon-shopping-cart"
+                                          style="font-size: 25px;"></span><span class="glyphicon glyphicon-plus" style="font-size: 12px;"></span>
+                                </a>
+                                <!--<input class="pull-right form-control input-xs" type="number" value="1" style="width: 40px;height: 25px">-->
+                                <number-spin data-ng-model="amount"></number-spin>
+                                <p style=" left: 0;margin-right: 5px">
+                                    <span  ng-repeat="i in getNumber(movie.ranking)"
+                                           class="glyphicon glyphicon-star"></span><span
+                                        ng-repeat="i in getNumber(5-movie.ranking)"
+                                        class="glyphicon glyphicon-star-empty"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        <!-- /.row -->
+
+
+        <!-- Title -->
+        <div ng-show="isLoggedIn">
+            <div  class="row">
+                <div class="col-lg-12">
+                    <h3>New Movies</h3>
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <!-- Page Features -->
+            <div ng-show="isLoggedIn"  class="row text-center">
+
+                <div ng-repeat="movie in moviesNew"
+                     class="col-sm-4 col-lg-3 col-md-3" >
                     <div class="thumbnail">
                         <img style="width: 300px; height: 250px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
                         <div class="caption">
@@ -65,7 +108,7 @@
                                                                                    href="http://www.bootsnipp.com">Bootsnipp
                                 - http://bootsnipp.com</a>.</p>
                         </div>
-                        <div class="ratings" >
+                        <div class="ratings" style="padding: 0 10px 5px 10px">
                             <a ng-click="addMovieToCart(movie,amount)" class="pull-right nounderline" style="text-decoration: none !important;margin-left: 15px;cursor: pointer;">
                                     <span class="glyphicon glyphicon-shopping-cart"
                                           style="font-size: 25px;"></span><span class="glyphicon glyphicon-plus" style="font-size: 12px;"></span>
@@ -82,59 +125,9 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- /.row -->
-
-
-        <!-- Title -->
-        <div ng-show="isLoggedIn">
-            <div  class="row">
-                <div class="col-lg-12">
-                    <h3>New Movies</h3>
-                </div>
-            </div>
-            <!-- /.row -->
-
-            <!-- Page Features -->
-            <div ng-show="isLoggedIn"  class="row text-center">
-
-                <div ng-repeat="movie in moviesNew" class="col-md-3 col-sm-6 hero-feature">                        <div class="thumbnail">
-                    <img style="width: 300px; height: 250px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
-                    <div class="caption">
-                        <h4 class="pull-right">${{movie.price_dollars}}</h4>
-                        <h4><a ng-click="viewMovie(movie)">{{movie.name}}</a>
-                        </h4>
-                        <p>See more snippets like this online store item at <a target="_blank"
-                                                                               href="http://www.bootsnipp.com">Bootsnipp
-                            - http://bootsnipp.com</a>.</p>
-                    </div>
-                    <div class="ratings" style="padding: 0 10px 5px 10px">
-                        <a ng-click="addMovieToCart(movie,amount)" class="pull-right nounderline" style="text-decoration: none !important;margin-left: 15px;cursor: pointer;">
-                                    <span class="glyphicon glyphicon-shopping-cart"
-                                          style="font-size: 25px;"></span><span class="glyphicon glyphicon-plus" style="font-size: 12px;"></span>
-                        </a>
-                        <!--<input class="pull-right form-control input-xs" type="number" value="1" style="width: 40px;height: 25px">-->
-                        <number-spin data-ng-model="amount"></number-spin>
-                        <p style="margin-right: 5px">
-                                    <span  ng-repeat="i in getNumber(movie.ranking)"
-                                           class="glyphicon glyphicon-star"></span><span
-                                ng-repeat="i in getNumber(5-movie.ranking)"
-                                class="glyphicon glyphicon-star-empty"></span>
-                        </p>
-                    </div>
-                </div>
-                </div>
-            </div>
             <hr>
         </div>
         <!-- Footer -->
-        <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Copyright &copy; Your Website 2014</p>
-                </div>
-            </div>
-        </footer>
 
     </div>
     <!-- /.container -->

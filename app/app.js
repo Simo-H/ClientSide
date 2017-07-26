@@ -248,7 +248,11 @@ var app = angular.module('myApp', [
             }
             var res = $http.post('http://localhost:8888/clients/login', login, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
-
+                if(data.length == 0)
+                {
+                    bootbox.alert("User or Password are invalid, please enter correct user name and password")
+                    return;
+                }
                 var userSession = {"username": data[0].username, "UserID": data[0].client_id, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate,
                     "favourite_catergory": data[0].favourite_catergory, "favourite_catergory2": data[0].favourite_catergory2}
                 $log.info(userSession);
@@ -341,10 +345,11 @@ var app = angular.module('myApp', [
         }
         return factory;
     })
-    .controller('homeController', function ($scope, $http, $log, UserDetails) {
+    .controller('homeController', function ($scope, $http, $log,ShoppingDetails, UserDetails,MoviesUtilities, $uibModal) {
         $scope.moviesHot = [];
         $scope.moviesNew = [];
         $scope.isLoggedIn = UserDetails.getUserStatus();
+        $scope.amount = '1';
         $http.get("http://localhost:8888/movies/bestFive").success(function (response) {
             $scope.moviesHot = response;
         });
@@ -358,8 +363,40 @@ var app = angular.module('myApp', [
         $scope.pictureLink = function (movie_id) {
             return 'http://localhost:8888/images/ (' + movie_id +").jpg";
         }
+        $scope.addAmountToMovie = function (movie, amount) {
+            movie['amount'] = amount;
+            // $log.info(movie);
+        }
+        $scope.addMovieToCart = function (movie, amount) {
+            if (amount > 0) {
+                $scope.addAmountToMovie(movie, amount);
+                // $log.info(movie);
+                ShoppingDetails.addMovie(movie,UserDetails.getUsername());
+            }
+
+        }
+        $scope.getNumber = function (num) {
+            return MoviesUtilities.getNumber(num);
+        };
+        $scope.viewMovie = function (movie) {
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'Templates/Main/MovieDetailsModal.html',
+                controller: 'MovieModalController',
+                resolve: {
+                    movie: function () {
+                        return movie;
+                    }
+                }
+            });
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
     })
-    .controller('moviesController', function ($scope, $http, $log, $uibModal, ShoppingDetails, MoviesUtilities,$cookies,UserDetails) {
+    .controller('moviesController', function ($scope, $http, $log, $uibModal, ShoppingDetails, MoviesUtilities,$cookies,UserDetails,$location,$anchorScroll) {
         $scope.categories = new Array('Action', 'Adventure', 'Animation', 'Biography','Comedy','Crime','Documentary','Drama','Fantasy','Music','Thriller','Mystery');
         $scope.searchByCategory = "";
         $scope.searchByMovieName = "";
@@ -434,6 +471,13 @@ var app = angular.module('myApp', [
             // $log.info($scope.isLoggedIn);
             // $log.info($scope.isLoggedIn);
         });
+        $scope.scrollTo = function(id) {
+            var old = $location.hash();
+            $location.hash(id);
+            $anchorScroll();
+            //reset to old to keep any additional routing logic from kicking in
+            $location.hash(old);
+        };
 
 
     })
@@ -520,7 +564,9 @@ var app = angular.module('myApp', [
         $scope.ok = function () {
             $uibModalInstance.close($scope.selected.item);
         };
-
+        $scope.pictureLink = function (movie_id) {
+            return 'http://localhost:8888/images/ (' + movie_id +").jpg";
+        }
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };

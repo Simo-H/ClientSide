@@ -32,15 +32,11 @@
     <div >
 
                 <div id="movieModal" class="thumbnail col-md-12">
-                    <img class="img-responsive" src="http://placehold.it/800x300" alt="">
+                    <img style="height: 500px" class="img-responsive" ng-src="{{pictureLink(movie.movie_id)}}" alt="">
                     <div class="caption-full">
                         <h4 class="pull-right">${{movie.price_dollars}}</h4>
                         <h4>{{movie.name}}
                         </h4>
-                        <p> <a target="_blank" href="http://bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
-                        <p>
-                            <strong><a href="http://maxoffsky.com/code-blog/laravel-shop-tutorial-1-building-a-review-system/">this building a review system tutorial</a>
-                            </strong>over at maxoffsky.com!</p>
                         <p>{{movieDescription.description}}</p>
                     </div>
                     <div class="ratings">
