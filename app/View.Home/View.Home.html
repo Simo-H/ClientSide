@@ -59,7 +59,7 @@
                         <img style="width: 300px; height: 250px;" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/320x150">
                         <div class="caption">
                             <h4 class="pull-right">${{movie.price_dollars}}</h4>
-                            <h4><a ng-click="viewMovie(movie)">{{movie.name}}</a>
+                            <h4><a ng-click="viewMovie(movie)" style="cursor: pointer;">{{movie.name| limitTo: 25 }}{{movie.name.length > 25 ? '...' : ''}}</a>
                             </h4>
                             <div class="ratings"  style="padding: 0 10px 5px 10px">
                                 <a ng-show=isLoggedIn ng-click="addMovieToCart(movie,amount)" class="pull-right nounderline" style="text-decoration: none !important;margin-left: 15px;cursor: pointer;">

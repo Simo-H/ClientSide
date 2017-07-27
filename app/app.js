@@ -412,6 +412,7 @@ var app = angular.module('myApp', [
         $scope.recommendedMovies = [];
         // $log.info("test" + UserDetails.favourite_catergory);
         $scope.isLoggedIn = UserDetails.getUserStatus();
+      //  $log.info($scope.isLoggedIn);
         $scope.pictureLink = function (movie_id) {
             return MoviesUtilities.pictureLink(movie_id);
         }
