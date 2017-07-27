@@ -21,15 +21,15 @@
                 </div>
                 <div class="panel-body" class="col-xs-12">
                     <div  class="col-xs-12" class="row" ng-repeat="order in OrdersList">
-                        <div class="col-xs-2"><img class="img-responsive" ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/100x70">
-                        </div>
+
                         <div class="col-xs-10">
                             <div class="col-xs-8">
                                 <p class="product-name" class="col-xs-2"><strong><a ng-click="viewOrderInvoice(order)">Order number: {{order.order_id}}</a></strong></p><p>Date of Purchase:  {{order.date_of_purchase|  date:"MM/dd/yyyy"}}</p>
                                 <p  class="product-name"></p><p>Date of Shipment:  {{order.date_of_shipment|  date:"MM/dd/yyyy"}}</p>
                             </div>
                             <div class="col-xs-4">
-                                <p align="right" >cost:{{order.total_cost_dollar}}$ <span class="text-muted"></span></p>
+                                <p align="right" >Price:  {{order.total_cost_dollar}}$ <span class="text-muted"></span></p>
+                                <button ng-click="viewOrderInvoice(order)" class="btn btn-default">More Info</button>
                             </div>
                         </div>
                         <div class="col-xs-12">
