@@ -111,8 +111,10 @@
                             </div>
 
                             <div  class="form-group">
+                                <p>Select your country :</p>
                                 <select ng-model="country" required  class="form-control input-lg" name="country"    class="custom-select mb-2 mr-sm-2 mb-sm-0" id="country" >
                                     <!--<dropdown multiple id="dropdown"></dropdown>-->
+
                                     <option ng-repeat="option in countrylist" value="{{option}}">{{option}}</option>                                    <!--<div  ng-repeat="country in countrylist" >-->
                                         <!--<option value={{country}} class="form-control input-lg">{{country}}</option>-->
                                         <!--<span ng-show="frm.country.$dirty&&frm.country.$error.required">required</span>-->
@@ -133,6 +135,7 @@
                                     <!--<input type="text" ng-model="favourite_catergory" required required name="favourite_catergory" id="password" class="form-control input-lg" placeholder="Favorite category*">-->
                                     <!--<span ng-show="frm.favourite_catergory.$dirty&&frm.favourite_catergory.$error.required">required</span>-->
 
+                                    <p>Choose preferred category:</p>
                                     <select ng-model="favourite_catergory" required  class="form-control input-lg" name="favourite_catergory"    class="custom-select mb-2 mr-sm-2 mb-sm-0" id="favourite_catergory" >
                                         <option value="Action" class="form-control input-lg">Action</option>
                                         <option value="Adventure" class="form-control input-lg">Adventure</option>
@@ -157,6 +160,7 @@
 
                              <div  class="form-group">
                                 <div class="form-group">
+                                    <p>Choose another Preferred category:</p>
                                     <!--<input type="text" ng-model="favourite_catergory2" required required name="favourite_catergory2" id="password_confirmation" class="form-control input-lg" placeholder="Favorite category 2*">-->
                                     <!--<span ng-show="frm.favourite_catergory2.$dirty&&frm.favourite_catergory2.$error.required">required</span>-->
                                     <select ng-model="favourite_catergory2" required  class="form-control input-lg" name="favourite_catergory2"    class="custom-select mb-2 mr-sm-2 mb-sm-0" id="favourite_catergory2" >

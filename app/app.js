@@ -43,7 +43,10 @@ var app = angular.module('myApp', [
                 templateUrl: 'View.OrdersList/View.OrderList.html',
                 controller: 'OrderListController'
             })
-
+        .when('/About',
+            {
+                templateUrl: 'View.About/About.html'
+            })
         .otherwise({redirectTo: 'index.html'});
 }])
     .directive('numericOnly', function () {
@@ -495,7 +498,7 @@ var app = angular.module('myApp', [
             });
         }
     })
-    .controller('RegisterController', function ($scope, $http, $log,UserDetails) {
+    .controller('RegisterController', function ($scope, $http, $log,UserDetails,$location) {
         $scope.countrylist=[];
         var xmlhttp;
         if(window.XMLHttpRequest){
@@ -544,7 +547,8 @@ var app = angular.module('myApp', [
                 if (data.statusCode!=400)
                 {
                     $log.info("111111");
-                    UserDetails.Login($scope.username,$scope.password);
+                    //UserDetails.Login($scope.username,$scope.password);
+                    $location.path('/Login');
                 }
             })
             .error(function (data, status, headers, config) {
@@ -726,6 +730,7 @@ var app = angular.module('myApp', [
                     order.order_id = data;
                     $scope.viewOrderInvoice(order);
                     ShoppingDetails.setmovies();
+                    $uibModalInstance.dismiss('cancel');
                     $location.path('/OrdersList');
                 }
                 else{
