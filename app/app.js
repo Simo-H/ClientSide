@@ -303,6 +303,9 @@ var app = angular.module('myApp', [
             // $log.info(arr);
             return arr;
         }
+        factory.pictureLink = function (movie_id) {
+            return 'http://localhost:8888/images/ (' + movie_id +").jpg";
+        }
         return factory;
     })
     .factory('ShoppingDetails', function ($rootScope, $log,$cookies) {
@@ -364,7 +367,7 @@ var app = angular.module('myApp', [
             // $log.info($scope.isLoggedIn);
         });
         $scope.pictureLink = function (movie_id) {
-            return 'http://localhost:8888/images/ (' + movie_id +").jpg";
+            return MoviesUtilities.pictureLink(movie_id);
         }
         $scope.addAmountToMovie = function (movie, amount) {
             movie['amount'] = amount;
@@ -410,7 +413,7 @@ var app = angular.module('myApp', [
         // $log.info("test" + UserDetails.favourite_catergory);
         $scope.isLoggedIn = UserDetails.getUserStatus();
         $scope.pictureLink = function (movie_id) {
-            return 'http://localhost:8888/images/ (' + movie_id +").jpg";
+            return MoviesUtilities.pictureLink(movie_id);
         }
         $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + UserDetails.favourite_catergory).success(function (response) {
             $scope.recommendedMovies.push.apply($scope.recommendedMovies, response);
@@ -569,7 +572,7 @@ var app = angular.module('myApp', [
             $uibModalInstance.close($scope.selected.item);
         };
         $scope.pictureLink = function (movie_id) {
-            return 'http://localhost:8888/images/ (' + movie_id +").jpg";
+            return MoviesUtilities.pictureLink(movie_id);
         }
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
@@ -589,7 +592,7 @@ var app = angular.module('myApp', [
             }
         }
     })
-    .controller('ShoppingCartController', function ($scope, $log, $http, $location, $uibModal, ShoppingDetails, UserDetails, $cookies) {
+    .controller('ShoppingCartController', function ($scope, $log, $http, $location, $uibModal, ShoppingDetails, MoviesUtilities,UserDetails, $cookies) {
         $scope.totalPrice = 0;
 
         $scope.movies = ShoppingDetails.movies;
@@ -632,6 +635,9 @@ var app = angular.module('myApp', [
                 controller: 'CheckoutModalController',
             });}
         }
+        $scope.pictureLink = function (movie_id) {
+            return MoviesUtilities.pictureLink(movie_id);
+        }
 
     })
     .controller('OrderListController',function($scope,$log,$http,$location,$uibModal,UserDetails){
@@ -661,6 +667,7 @@ var app = angular.module('myApp', [
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
+
     })
     .controller('CheckoutModalController', function ($scope, $uibModalInstance, $log,$location,$uibModal, $http,ShoppingDetails,UserDetails) {
         $scope.pay="dollar";
