@@ -3,8 +3,6 @@
 // Declare app level module which depends on views, and components
 var app = angular.module('myApp', [
     'ngRoute',
-    'myApp.View.Home',
-    'myApp.view2',
     'myApp.version',
     'ui.bootstrap',
     'ngCookies',
@@ -786,8 +784,19 @@ var app = angular.module('myApp', [
 
 
     })
-    .controller('OrderInvoiceModalController', function ($scope, $uibModalInstance, order, $log) {
-        $scope.order = order;
+    .controller('OrderInvoiceModalController', function ($scope, $uibModalInstance, order, $log,$http) {
+        // $scope.order = order;
+        // $log.info(order);
+        $http.get("http://localhost:8888/orders/getOrder?order_id="+order.order_id).success(function (response) {
+            $scope.order = response[0];
+            $http.get("http://localhost:8888/clients/getClientDetails?client_id="+response[0].client_id).success(function (response2) {
+                $scope.clientDetails = response2[0];
+            });
+        });
+        $http.get("http://localhost:8888/orders/OrderDetails?order_id="+order.order_id).success(function (response3) {
+            $scope.orderDetails = response3;
+            $log.info(response3);
+        });
         $scope.ok = function () {
             $uibModalInstance.close($scope.selected.item);
         };
