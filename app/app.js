@@ -193,6 +193,7 @@ var app = angular.module('myApp', [
         }
         factory.setUserToken = function (user_token) {
             factory.user_token = user_token;
+            $http.defaults.headers.common = {'token': user_token,'username' : factory.username};
             $log.info("user token:  ");
             $log.info(user_token);
 
@@ -221,6 +222,7 @@ var app = angular.module('myApp', [
             if(NotfirstLogin)
             {
                 var User = JSON.parse($cookies.get(lastUserLoggedIn));
+
             }
             // $log.info(NotfirstLogin && User.UserStatus === 'true');
             factory.setUserStatus(NotfirstLogin && User.UserStatus === 'true');
@@ -286,7 +288,6 @@ var app = angular.module('myApp', [
                 factory.loadUserData();
                 $log.info("factory token:  ");
                 $log.info(factory.user_token);
-                $http.defaults.headers.common = {'token': factory.user_token,'username' : factory.username};
                 $location.path('/');
 
             });
