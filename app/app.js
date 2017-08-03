@@ -193,6 +193,8 @@ var app = angular.module('myApp', [
         }
         factory.setUserToken = function (user_token) {
             factory.user_token = user_token;
+            $log.info("user token:  ");
+            $log.info(user_token);
 
             $rootScope.$broadcast('updateUser');
             // $log.info(factory.user_token);
@@ -220,7 +222,7 @@ var app = angular.module('myApp', [
             {
                 var User = JSON.parse($cookies.get(lastUserLoggedIn));
             }
-            $log.info(NotfirstLogin && User.UserStatus === 'true');
+            // $log.info(NotfirstLogin && User.UserStatus === 'true');
             factory.setUserStatus(NotfirstLogin && User.UserStatus === 'true');
             if (factory.getUserStatus() === true)
             {
@@ -254,10 +256,10 @@ var app = angular.module('myApp', [
                     bootbox.alert("User or Password are invalid, please enter correct user name and password")
                     return;
                 }
-                $log.info(data);
+                // $log.info(data);
                 var userSession = {"username": data[0].username, "token": data[0].token, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate,
                     "favourite_catergory": data[0].favourite_catergory, "favourite_catergory2": data[0].favourite_catergory2}
-                $log.info(userSession);
+                // $log.info(userSession);
                 if (undefined == $cookies.get(data[0].username)) {
                     $cookies.put(data[0].username, JSON.stringify(userSession));
                 }
@@ -268,18 +270,23 @@ var app = angular.module('myApp', [
                     logoutUser.UserLastEntryDate = new Date();
                     factory.favourite_catergory = data[0].favourite_catergory;
                     factory.favourite_catergory2 = data[0].favourite_catergory2;
+                    logoutUser.token = data[0].token;
                     $cookies.put(data[0].username, JSON.stringify(logoutUser));
                 }
                 $cookies.put('!LastUser', data[0].username);
                 // $log.info($cookies.get(data[0].username));
                 factory.setUserLastEntryDate(LastEntryDate);
                 factory.setUserStatus(true);
+                $log.info("data[0] token:  ");
+                $log.info(data[0].token);
                 factory.setUserToken(data[0].token);
                 factory.setUsername(data[0].username);
                 factory.favourite_catergory = data[0].favourite_catergory;
                 factory.favourite_catergory2 = data[0].favourite_catergory2;
                 factory.loadUserData();
-                $http.defaults.headers.common = {'token': factory.getUserToken(),'username' : factory.getUsername()};
+                $log.info("factory token:  ");
+                $log.info(factory.user_token);
+                $http.defaults.headers.common = {'token': factory.user_token,'username' : factory.username};
                 $location.path('/');
 
             });
