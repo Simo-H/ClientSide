@@ -738,25 +738,33 @@ var app = angular.module('myApp', [
             // $log.info(order)
 
             var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}});
-            res.success(function (data, status, headers, config)
-            {
+            res.success(function (data, status, headers, config) {
                 var isANumber = isNaN(data) === false;
-                if(isANumber) {
+                if (isANumber) {
                     order.order_id = data;
                     $scope.viewOrderInvoice(order);
                     ShoppingDetails.setmovies();
                     $uibModalInstance.dismiss('cancel');
                     $location.path('/OrdersList');
                 }
-                else{
-                    var message="<br> <p style= "+'"font-size:160%;"'+">Order was not completed. The following movies are currently out of stock:</p> <br> " +
-                        "<p align="+'"center"'+"> ";
-                    for ( var i = 0; i < data.length; i++) {
-                        message +=(i+1).toString() +". "+ data[i].name + "<br>";
-                        // $log.info(data[i]);
+                else {
+                    if (data != "No access - Please log in") {
+                        var message = "<br> <p style= " + '"font-size:160%;"' + ">Order was not completed. The following movies are currently out of stock:</p> <br> " +
+                            "<p align=" + '"center"' + "> ";
+                        for (var i = 0; i < data.length; i++) {
+                            message += (i + 1).toString() + ". " + data[i].name + "<br>";
+                            // $log.info(data[i]);
+                        }
+                        message += "</p>"
+                        bootbox.alert(message)
                     }
-                    message+="</p>"
-                    bootbox.alert(message)}
+
+                else
+                {
+                    bootbox.alert("No access - please log in");
+                }
+            }
+
             });
             res.error(function (data, status, headers, config) {
                 alert("failure message: " + JSON.stringify({data: data}));
