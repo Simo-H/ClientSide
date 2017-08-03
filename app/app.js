@@ -167,7 +167,7 @@ var app = angular.module('myApp', [
         var factory = {};
         factory.isLoggedIn = false;
         factory.username = "Guest";
-        factory.user_id;
+        factory.user_token;
         factory.userLastEntryDate = new Date();
         factory.dollar = true;
         factory.favourite_catergory = "";
@@ -182,8 +182,8 @@ var app = angular.module('myApp', [
         factory.getUserStatus = function () {
             return factory.isLoggedIn;
         }
-        factory.getUserId = function () {
-            return factory.user_id;
+        factory.getUserToken = function () {
+            return factory.user_token;
         }
         factory.setUserStatus = function (status) {
             factory.isLoggedIn = status;
@@ -191,11 +191,11 @@ var app = angular.module('myApp', [
             $rootScope.$broadcast('updateUser');
             // $log.info(factory.isLoggedIn);
         }
-        factory.setUserId = function (userId) {
-            factory.user_id = userId;
+        factory.setUserToken = function (user_token) {
+            factory.user_token = user_token;
 
             $rootScope.$broadcast('updateUser');
-            // $log.info(factory.user_id);
+            // $log.info(factory.user_token);
         }
         factory.getUsername = function () {
             return factory.username;
@@ -225,7 +225,7 @@ var app = angular.module('myApp', [
             if (factory.getUserStatus() === true)
             {
                 factory.setUsername(User.username);
-                factory.setUserId(User.UserID);
+                factory.setUserToken(User.token);
                 factory.favourite_catergory = User.favourite_catergory;
                 factory.favourite_catergory2 = User.favourite_catergory2;
                 // factory.setUserLastEntryDate(User.UserLastEntryDate)
@@ -254,6 +254,7 @@ var app = angular.module('myApp', [
                     bootbox.alert("User or Password are invalid, please enter correct user name and password")
                     return;
                 }
+                $log.info(data);
                 var userSession = {"username": data[0].username, "token": data[0].token, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate,
                     "favourite_catergory": data[0].favourite_catergory, "favourite_catergory2": data[0].favourite_catergory2}
                 $log.info(userSession);
@@ -273,12 +274,12 @@ var app = angular.module('myApp', [
                 // $log.info($cookies.get(data[0].username));
                 factory.setUserLastEntryDate(LastEntryDate);
                 factory.setUserStatus(true);
-                factory.setUserId(data[0].client_id);
+                factory.setUserToken(data[0].token);
                 factory.setUsername(data[0].username);
                 factory.favourite_catergory = data[0].favourite_catergory;
                 factory.favourite_catergory2 = data[0].favourite_catergory2;
                 factory.loadUserData();
-                $log.info(factory.getUsername() +" : " + factory.getUserId() + " : " + factory.getUserStatus() + " : " + factory.getUserLastEntryDate());
+                $http.defaults.headers.common = {'token': factory.getUserToken(),'username' : factory.getUsername()};
                 $location.path('/');
 
             });
@@ -641,7 +642,7 @@ var app = angular.module('myApp', [
     })
     .controller('OrderListController',function($scope,$log,$http,$location,$uibModal,UserDetails){
         $scope.OrdersList=[];
-        $http.get("http://localhost:8888/orders/previousOrders?client_id="+UserDetails.user_id).success(function (response) {
+        $http.get("http://localhost:8888/orders/previousOrders").success(function (response) {
             $scope.OrdersList = response;
 
         });
@@ -716,12 +717,12 @@ var app = angular.module('myApp', [
         };
 
         $scope.submit=function(){
-           // $log.info(factory.user_id);
+           // $log.info(factory.user_token);
             var order = {
 
                 total_cost_dollar:$scope.payment ,
                 date_of_purchase:new Date() ,
-                client_id:UserDetails.user_id ,
+                token:UserDetails.user_token ,
                 date_of_shipment: $scope.orderdate,
                 movies: $scope.movies
             };
@@ -775,7 +776,7 @@ var app = angular.module('myApp', [
             $log.info($cookies.get($scope.username));
             UserDetails.setUsername("Guest");
             UserDetails.setUserStatus(false);
-            UserDetails.setUserId("");
+            UserDetails.setUserToken("");
             $location.path('/');
             // $log.info(UserDetails.getUserStatus())
         }
