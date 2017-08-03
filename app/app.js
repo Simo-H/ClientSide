@@ -254,7 +254,7 @@ var app = angular.module('myApp', [
                     bootbox.alert("User or Password are invalid, please enter correct user name and password")
                     return;
                 }
-                var userSession = {"username": data[0].username, "UserID": data[0].client_id, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate,
+                var userSession = {"username": data[0].username, "token": data[0].token, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate,
                     "favourite_catergory": data[0].favourite_catergory, "favourite_catergory2": data[0].favourite_catergory2}
                 $log.info(userSession);
                 if (undefined == $cookies.get(data[0].username)) {
