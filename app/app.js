@@ -651,7 +651,16 @@ var app = angular.module('myApp', [
     .controller('OrderListController',function($scope,$log,$http,$location,$uibModal,UserDetails){
         $scope.OrdersList=[];
         $http.get("http://localhost:8888/orders/previousOrders").success(function (response) {
-            $scope.OrdersList = response;
+            if(response=="No access - please log in")
+            {
+                bootbox.alert("No access - please log in");
+                $scope.OrdersList = [];
+            }
+            else
+            {
+                $scope.OrdersList = response;
+
+            }
 
         });
         $scope.goback = function () {
@@ -805,14 +814,31 @@ var app = angular.module('myApp', [
         // $scope.order = order;
         // $log.info(order);
         $http.get("http://localhost:8888/orders/getOrder?order_id="+order.order_id).success(function (response) {
-            $scope.order = response[0];
-            $http.get("http://localhost:8888/clients/getClientDetails?client_id="+response[0].client_id).success(function (response2) {
-                $scope.clientDetails = response2[0];
-            });
+            if(response=="No access - please log in")
+            {
+                bootbox.alert("No access - please log in");
+                $scope.order = null;
+            }
+            else
+            {
+                $scope.order = response[0];
+                $http.get("http://localhost:8888/clients/getClientDetails?client_id="+response[0].client_id).success(function (response2) {
+                    $scope.clientDetails = response2[0];
+                });
+            }
+
         });
         $http.get("http://localhost:8888/orders/OrderDetails?order_id="+order.order_id).success(function (response3) {
-            $scope.orderDetails = response3;
-            $log.info(response3);
+            if(response3=="No access - please log in"){
+                bootbox.alert("No access - please log in");
+                $scope.orderDetails = [];
+            }
+            else
+            {
+                $scope.orderDetails = response3;
+                $log.info(response3);
+            }
+
         });
         $scope.ok = function () {
             $uibModalInstance.close($scope.selected.item);
