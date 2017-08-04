@@ -111,7 +111,6 @@ var app = angular.module('myApp', [
     .filter('filterCategories', function ($log) {
         return function (items, text) {
             var result = {};
-            // $log.info(text);
             if (text != "") {
                 angular.forEach(items, function (value, key) {
                     if (key.includes(text)) {
@@ -128,7 +127,6 @@ var app = angular.module('myApp', [
     .filter('filterMovies', function ($log) {
         return function (items, text, category) {
             var result = {};
-            // $log.info(text);
             if (text != "") {
                 angular.forEach(items, function (value, key) {
                     if (key.includes(text)) {
@@ -150,7 +148,6 @@ var app = angular.module('myApp', [
     .filter('filterByRanking', function ($log) {
         return function (items, ranking) {
             var result = [];
-            // $log.info(text);
             if (ranking != "") {
                 angular.forEach(items, function (item) {
                     if(item.ranking > ranking)
@@ -187,18 +184,12 @@ var app = angular.module('myApp', [
         }
         factory.setUserStatus = function (status) {
             factory.isLoggedIn = status;
-            // $log.info(status);
             $rootScope.$broadcast('updateUser');
-            // $log.info(factory.isLoggedIn);
         }
         factory.setUserToken = function (user_token) {
             factory.user_token = user_token;
             $http.defaults.headers.common = {'token': user_token,'username' : factory.username};
-            $log.info("user token:  ");
-            $log.info(user_token);
-
             $rootScope.$broadcast('updateUser');
-            // $log.info(factory.user_token);
         }
         factory.getUsername = function () {
             return factory.username;
@@ -217,14 +208,11 @@ var app = angular.module('myApp', [
             // });
             var lastUserLoggedIn = $cookies.get('!LastUser');
             var NotfirstLogin = undefined != lastUserLoggedIn;
-            // $log.info($cookies.get(lastUserLoggedIn));
-            // $log.info(NotfirstLogin);
             if(NotfirstLogin)
             {
                 var User = JSON.parse($cookies.get(lastUserLoggedIn));
 
             }
-            // $log.info(NotfirstLogin && User.UserStatus === 'true');
             factory.setUserStatus(NotfirstLogin && User.UserStatus === 'true');
             if (factory.getUserStatus() === true)
             {
@@ -238,7 +226,6 @@ var app = angular.module('myApp', [
                     ShoppingDetails.movies = User.Cart;
                 }
             }
-            // $log.info(factory.getUserStatus());
         }
         factory.Login = function (username,password) {
             // var login = {
@@ -258,10 +245,8 @@ var app = angular.module('myApp', [
                     bootbox.alert("User or Password are invalid, please enter correct user name and password")
                     return;
                 }
-                // $log.info(data);
                 var userSession = {"username": data[0].username, "token": data[0].token, "UserStatus": "true", "UserLastEntryDate":factory.userLastEntryDate,
                     "favourite_catergory": data[0].favourite_catergory, "favourite_catergory2": data[0].favourite_catergory2}
-                // $log.info(userSession);
                 if (undefined == $cookies.get(data[0].username)) {
                     $cookies.put(data[0].username, JSON.stringify(userSession));
                 }
@@ -276,18 +261,13 @@ var app = angular.module('myApp', [
                     $cookies.put(data[0].username, JSON.stringify(logoutUser));
                 }
                 $cookies.put('!LastUser', data[0].username);
-                // $log.info($cookies.get(data[0].username));
                 factory.setUserLastEntryDate(LastEntryDate);
                 factory.setUserStatus(true);
-                $log.info("data[0] token:  ");
-                $log.info(data[0].token);
                 factory.setUserToken(data[0].token);
                 factory.setUsername(data[0].username);
                 factory.favourite_catergory = data[0].favourite_catergory;
                 factory.favourite_catergory2 = data[0].favourite_catergory2;
                 factory.loadUserData();
-                $log.info("factory token:  ");
-                $log.info(factory.user_token);
                 $location.path('/');
 
             });
@@ -307,7 +287,7 @@ var app = angular.module('myApp', [
                 i++;
             }
             ;
-            // $log.info(arr);
+
             return arr;
         }
         factory.pictureLink = function (movie_id) {
@@ -320,8 +300,6 @@ var app = angular.module('myApp', [
 
         factory.movies = [];
         factory.getMovies = function () {
-            // $log.info(factory.movies);
-
             return factory.movies;
 
         }
@@ -330,7 +308,6 @@ var app = angular.module('myApp', [
                 factory.movies = [];
             }
             factory.movies.push(movie);
-            $log.info("tam tam tam");
             $rootScope.$broadcast('updateShopping');
             factory.updateCookies(username);
         }
@@ -346,7 +323,6 @@ var app = angular.module('myApp', [
             factory.movies = [];
         }
         factory.updateMovieAmount = function (index,movie,username) {
-            // $log.info("index: "+ index + " movie amount: "+movie.amount);
             factory.movies[index].amount = movie.amount;
             factory.updateCookies(username);
         }
@@ -371,19 +347,16 @@ var app = angular.module('myApp', [
         });
         $scope.$on('updateUser', function () {
             $scope.isLoggedIn = UserDetails.getUserStatus();
-            // $log.info($scope.isLoggedIn);
         });
         $scope.pictureLink = function (movie_id) {
             return MoviesUtilities.pictureLink(movie_id);
         }
         $scope.addAmountToMovie = function (movie, amount) {
             movie['amount'] = amount;
-            // $log.info(movie);
         }
         $scope.addMovieToCart = function (movie, amount) {
             if (amount > 0) {
                 $scope.addAmountToMovie(movie, amount);
-                // $log.info(movie);
                 ShoppingDetails.addMovie(movie,UserDetails.getUsername());
             }
 
@@ -405,7 +378,6 @@ var app = angular.module('myApp', [
             modalInstance.result.then(function (selectedItem) {
                 $scope.selected = selectedItem;
             }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
             });
         };
     })
@@ -417,20 +389,15 @@ var app = angular.module('myApp', [
         $scope.amount = '1';
         $scope.showQuantity = 5;
         $scope.recommendedMovies = [];
-        // $log.info("test" + UserDetails.favourite_catergory);
         $scope.isLoggedIn = UserDetails.getUserStatus();
-      //  $log.info($scope.isLoggedIn);
         $scope.pictureLink = function (movie_id) {
             return MoviesUtilities.pictureLink(movie_id);
         }
         $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + UserDetails.favourite_catergory).success(function (response) {
             $scope.recommendedMovies.push.apply($scope.recommendedMovies, response);
-            $log.info(UserDetails.favourite_catergory);
         });
         $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + UserDetails.favourite_catergory2).success(function (response) {
             $scope.recommendedMovies.push.apply($scope.recommendedMovies, response);
-            // $log.info($scope.recommendedMovies);
-
         });
 
         angular.forEach($scope.categories, function (catagory) {
@@ -438,8 +405,6 @@ var app = angular.module('myApp', [
             $http.get("http://localhost:8888/movies/getMoviesByCategory?category=" + catagory).success(function (response) {
                 $scope.movisByCategory[catagory] = [];
                 $scope.movisByCategory[catagory] = response;
-                // ShoppingDetails.movies = response;
-                // $log.info(ShoppingDetails.movies);
             });
         });
         $scope.getSixMoreMoviesByCategory = function (category) {
@@ -462,7 +427,6 @@ var app = angular.module('myApp', [
             modalInstance.result.then(function (selectedItem) {
                 $scope.selected = selectedItem;
             }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
             });
         };
         $scope.getNumber = function (num) {
@@ -470,20 +434,16 @@ var app = angular.module('myApp', [
         };
         $scope.addAmountToMovie = function (movie, amount) {
             movie['amount'] = amount;
-            // $log.info(movie);
         }
         $scope.addMovieToCart = function (movie, amount) {
             if (amount > 0) {
                 $scope.addAmountToMovie(movie, amount);
-                // $log.info(movie);
                 ShoppingDetails.addMovie(movie,UserDetails.getUsername());
             }
 
         }
         $scope.$on('updateUser', function () {
             $scope.isLoggedIn = UserDetails.getUserStatus();
-            // $log.info($scope.isLoggedIn);
-            // $log.info($scope.isLoggedIn);
         });
         $scope.scrollTo = function(id) {
             var old = $location.hash();
@@ -521,19 +481,13 @@ var app = angular.module('myApp', [
         xmlhttp.open("GET","countries.xml",false);
         xmlhttp.send();
         var xmlDoc=xmlhttp.responseXML;
-        $log.info(xmlDoc);
         var doc=xmlDoc.getElementsByTagName("Country");
         for(var i=0; i<doc.length;i++)
         {
            // $scope.countrylist[doc[i].getElementsByTagName("Name")];
             var country_name=doc[i].getElementsByTagName("Name")[0].childNodes[0].nodeValue;
             $scope.countrylist.push(country_name);
-
-            //  $log.info(doc[i].getElementsByTagName("Name")[0].childNodes[0].nodeValue);
         }
-        $log.info($scope.countrylist);
-
-        // xmlhttp.close();
         $scope.submit = function () {
             var user = {
                 client_id: $scope.client_id,
@@ -550,21 +504,15 @@ var app = angular.module('myApp', [
                 favourite_catergory2: $scope.favourite_catergory2,
                 username: $scope.username
             };
-            // $log.info(user.username);
-            // var password= $scope.last_name;
-
             $http.post('http://localhost:8888/clients/addClient', user, {headers: {'Content-Type': 'application/json'}})
            .success(function (data, status, headers, config) {
                 if (data.statusCode!=400)
                 {
-                    $log.info("111111");
-                    //UserDetails.Login($scope.username,$scope.password);
                     $location.path('/Login');
                 }
             })
             .error(function (data, status, headers, config) {
-                $log.info("3333333");
-                bootbox.alert("<h1>register fail</h1>");
+                bootbox.alert("<h1>Error - This id is already registered</h1>");
             });
 
         }
@@ -574,7 +522,6 @@ var app = angular.module('myApp', [
         $scope.movie = movie;
         $http.get("http://localhost:8888/movies/movieDescription?movie_id=" + movie.movie_id).success(function (response) {
             $scope.movieDescription = response[0];
-            // $log.info($scope.movieDescription);
         });
         $scope.ok = function () {
             $uibModalInstance.close($scope.selected.item);
@@ -590,12 +537,10 @@ var app = angular.module('myApp', [
         }
         $scope.addAmountToMovie = function (movie, amount) {
             movie['amount'] = amount;
-            // $log.info(movie);
         }
         $scope.addMovieToCart = function (movie, amount) {
             if (amount > 0) {
                 $scope.addAmountToMovie(movie, amount);
-                // $log.info(movie);
                 ShoppingDetails.addMovie(movie);
             }
         }
@@ -606,13 +551,27 @@ var app = angular.module('myApp', [
         $scope.movies = ShoppingDetails.movies;
         angular.forEach($scope.movies, function (movie) {
             $scope.totalPrice = movie.amount * movie.price_dollars + $scope.totalPrice;
-            // $log.info(movie);
         })
 
         $scope.clickContinueShoping = function () {
             $location.path('/Movies');
         }
+        $scope.viewMovie = function (movie) {
 
+            var modalInstance = $uibModal.open({
+                templateUrl: 'Templates/Main/MovieDetailsModal.html',
+                controller: 'MovieModalController',
+                resolve: {
+                    movie: function () {
+                        return movie;
+                    }
+                }
+            });
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+            }, function () {
+            });
+        };
         $scope.$on('updateShopping', function () {
             $scope.totalPrice = 0;
             $scope.movies = ShoppingDetails.getMovies();
@@ -621,8 +580,6 @@ var app = angular.module('myApp', [
             })
         });
         $scope.change = function (index,movie) {
-            // $log.info("1");
-
             $scope.totalPrice = 0;
             ShoppingDetails.updateMovieAmount(index,movie,UserDetails.getUsername());
             angular.forEach($scope.movies, function (movie) {
@@ -681,7 +638,6 @@ var app = angular.module('myApp', [
             modalInstance.result.then(function (selectedItem) {
                 $scope.selected = selectedItem;
             }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
             });
         };
 
@@ -700,8 +656,6 @@ var app = angular.module('myApp', [
         $scope.currentDate = $scope.currentDate.setDate($scope.currentDate.getDate() + 7);
         $scope.pay;
         $scope.change = function () {
-            $log.info('Modal dismissed at: ');
-
             if ($scope.pay == "dollar") {
                 $scope.payment = $scope.totalPrice;
 
@@ -729,12 +683,10 @@ var app = angular.module('myApp', [
             modalInstance.result.then(function (selectedItem) {
                 $scope.selected = selectedItem;
             }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
             });
         };
 
         $scope.submit=function(){
-           // $log.info(factory.user_token);
             var order = {
 
                 total_cost_dollar:$scope.payment ,
@@ -743,9 +695,6 @@ var app = angular.module('myApp', [
                 date_of_shipment: $scope.orderdate,
                 movies: $scope.movies
             };
-
-            // $log.info(order)
-
             var res = $http.post('http://localhost:8888/orders/addOrder', order, {headers: {'Content-Type': 'application/json'}});
             res.success(function (data, status, headers, config) {
                 var isANumber = isNaN(data) === false;
@@ -762,7 +711,6 @@ var app = angular.module('myApp', [
                             "<p align=" + '"center"' + "> ";
                         for (var i = 0; i < data.length; i++) {
                             message += (i + 1).toString() + ". " + data[i].name + "<br>";
-                            // $log.info(data[i]);
                         }
                         message += "</p>"
                         bootbox.alert(message)
@@ -789,30 +737,19 @@ var app = angular.module('myApp', [
         $scope.$on('updateUser', function () {
             $scope.username = UserDetails.getUsername();
             $scope.isLoggedIn = UserDetails.getUserStatus();
-            // $log.info($scope.isLoggedIn);
-            // $log.info($scope.isLoggedIn);
         });
         $scope.logout = function () {
             $cookies.put('!LastUser', $scope.username)
-            $log.info($cookies.get($scope.username));
             var logoutUser = JSON.parse($cookies.get($scope.username));
             logoutUser.UserStatus = "false";
             $cookies.put($scope.username, JSON.stringify(logoutUser));
-            $log.info($cookies.get($scope.username));
             UserDetails.setUsername("Guest");
             UserDetails.setUserStatus(false);
             UserDetails.setUserToken("");
             $location.path('/');
-            // $log.info(UserDetails.getUserStatus())
         }
-        // $scope.setUserName($scope.UserName);
-        // $log.info($scope.UserName);
-
-
     })
     .controller('OrderInvoiceModalController', function ($scope, $uibModalInstance, order, $log,$http) {
-        // $scope.order = order;
-        // $log.info(order);
         $http.get("http://localhost:8888/orders/getOrder?order_id="+order.order_id).success(function (response) {
             if(response=="No access - please log in")
             {
@@ -836,7 +773,6 @@ var app = angular.module('myApp', [
             else
             {
                 $scope.orderDetails = response3;
-                $log.info(response3);
             }
 
         });
@@ -851,9 +787,6 @@ var app = angular.module('myApp', [
         $scope.username ;
         $scope.security_answer ;
         $scope.restore=function(){
-            $log.info($scope.username);
-            $log.info( $scope.security_answer);
-
            var s= $http.get("http://localhost:8888/clients/restorePassword?username=" + $scope.username+"&security_answer="+ $scope.security_answer)
                 .success(function (response) {
                     if(response.length==0)

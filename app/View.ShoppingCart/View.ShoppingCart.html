@@ -38,7 +38,7 @@
                             <div class="col-xs-2"><img style="height: 100px; width: 90px"  ng-src="{{pictureLink(movie.movie_id)}}" alt="http://placehold.it/100x70">
                             </div>
                             <div class="col-xs-4">
-                                <h4 class="product-name"><strong><a>{{movie.name}}</a></strong></h4>
+                                <h4 class="product-name" style="cursor: pointer"><strong><a ng-click="viewMovie(movie)">{{movie.name}}</a></strong></h4>
                                 <h4>
                                     <small>{{movie.category}}</small>
                                 </h4>
