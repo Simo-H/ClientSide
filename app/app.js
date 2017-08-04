@@ -707,7 +707,7 @@ var app = angular.module('myApp', [
 
             }
             else {
-                $scope.payment = parseInt($scope.totalPrice) / 3.8;
+                $scope.payment = parseInt($scope.totalPrice) * 3.8;
 
             }
         }

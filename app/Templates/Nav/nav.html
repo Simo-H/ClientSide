@@ -46,7 +46,7 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a ng-bind="LastEntryDate | date:'dd/MM/yyyy'" ng-show="isLoggedIn"></a></li>
+                <li><a ng-show="isLoggedIn">Last Login:  {{LastEntryDate | date:'dd/MM/yyyy'}}</a></li>
                 <li><a ng-show="!isLoggedIn" href="#!/Login">Login</a></li><li><a ng-show="isLoggedIn" ng-click="logout()">Logout</a></li>
                 <li><a ng-show="!isLoggedIn" href="#!/Register">Register</a></li>
                 <li><a ng-show="isLoggedIn" href="#!/ShoppingCart" class="glyphicon glyphicon-shopping-cart" style="min-height: 10px; line-height: 20px; font-size: 30px; color: white"></a></li>
